@@ -1,6 +1,6 @@
 {
-  "name": "demo1",
-  "version": "8.0.14",
+  "name": "Pryal",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -17,7 +17,7 @@
     "apexcharts": "3.23.1",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.18.1",
-    "bootstrap": "5.0.0-beta3",
+    "bootstrap": "5.0.1",
     "bootstrap-icons": "^1.4.0",
     "clipboard": "^2.0.6",
     "dropzone": "^5.7.2",
