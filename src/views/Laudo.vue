@@ -184,7 +184,7 @@
                       </div>
                       <div class="col-lg-6">
                         <div class="row">
-                          <div class="col-7">
+                          <div class="col-lg-7">
                             <div
                               class="card border border-2 position-relative"
                               style="border-color: #15151e !important"
@@ -312,9 +312,9 @@
                               </div>
                             </div>
                           </div>
-                          <div class="col-5">
+                          <div class="col-lg-5">
                             <div
-                              class="card border border-warning mb-3 pb-3"
+                              class="card border border-warning my-3 pb-3"
                               v-for="(categoria,
                               index) in getCategoriaComProblema(
                                 model.laudo.categorias
@@ -347,10 +347,10 @@
                       v-for="(categoria, index) in model.laudo.categorias"
                       :key="index"
                     >
-                      <div class="col-8">
+                      <div class="col-lg-8">
                         <div class="card border mb-3">
                           <div className="card-body d-flex flex-column">
-                            <h5>{{ categoria.categoria }}</h5>
+                            <h3>{{ categoria.categoria }}</h3>
                             <div
                               class="d-flex justify-content-between align-items-center"
                               v-for="(item, indexItem) in categoria.items"
@@ -377,13 +377,13 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-4">
+                      <div class="col-lg-4">
                         <div class="card border mb-3">
                           <div className="card-body">
-                            <h5>Fotos</h5>
+                            <h3>Fotos</h3>
                             <div class="row">
                               <div
-                                class="col-lg-6"
+                                class="col-6"
                                 v-for="(evidencia,
                                 indexEvidencia) in getImagensCategoria(
                                   categoria.categoria
@@ -409,7 +409,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from "vue";
+import { defineComponent, reactive } from "vue";
 import { saveToken } from "@/core/services/JwtService";
 import ApiService from "@/core/services/ApiService";
 import { useRouter } from "vue-router";
