@@ -2,20 +2,20 @@ import LayoutConfigTypes from "@/core/config/LayoutConfigTypes";
 
 const config: LayoutConfigTypes = {
   themeName: "Metronic",
-  themeVersion: "8.0.14",
+  themeVersion: "8.0.15",
   demo: "demo1",
   main: {
     type: "default",
-    primaryColor: "#009EF7",
+    primaryColor: "#EF1E24",
     logo: {
       dark: "media/logos/logo-1.svg",
-      light: "media/logos/logo-1-dark.svg"
+      light: "media/logos/Pryal Horizontal.png"
     }
   },
   loader: {
-    logo: "media/logos/logo-1-dark.svg",
+    logo: "media/logos/Pryal P.png",
     display: true,
-    type: "default"
+    type: "spinner-logo"
   },
   scrollTop: {
     display: true
@@ -30,7 +30,7 @@ const config: LayoutConfigTypes = {
     }
   },
   toolbar: {
-    display: true,
+    display: false,
     width: "fluid",
     fixed: {
       desktop: true,
@@ -38,7 +38,7 @@ const config: LayoutConfigTypes = {
     }
   },
   aside: {
-    display: true,
+    display: false,
     theme: "dark",
     fixed: true,
     menuIcon: "svg",

@@ -19,7 +19,17 @@ class ApiService {
   public static init(app: App<Element>) {
     ApiService.vueInstance = app;
     ApiService.vueInstance.use(VueAxios, axios);
-    ApiService.vueInstance.axios.defaults.baseURL = "http://localhost";
+    // ApiService.vueInstance.axios.defaults.baseURL =
+    //   "https://localhost:5001/api/";
+    ApiService.vueInstance.axios.defaults.baseURL =
+      "https://pryal-back-homol.azurewebsites.net/api/";
+    ApiService.vueInstance.axios.defaults.headers.common["Accept"] =
+      "application/json";
+    ApiService.vueInstance.axios.defaults.headers.common["Content-Type"] =
+      "application/json";
+    ApiService.vueInstance.axios.defaults.headers.common[
+      "Access-Control-Allow-Origin"
+    ] = "*";
   }
 
   /**
@@ -28,7 +38,7 @@ class ApiService {
   public static setHeader(): void {
     ApiService.vueInstance.axios.defaults.headers.common[
       "Authorization"
-    ] = `Token ${JwtService.getToken()}`;
+    ] = `Bearer ${JwtService.getToken()}`;
   }
 
   /**
@@ -52,15 +62,10 @@ class ApiService {
    * @param slug: string
    * @returns Promise<AxiosResponse>
    */
-  public static get(
-    resource: string,
-    slug = "" as string
-  ): Promise<AxiosResponse> {
-    return ApiService.vueInstance.axios
-      .get(`${resource}/${slug}`)
-      .catch(error => {
-        throw new Error(`[KT] ApiService ${error}`);
-      });
+  public static get(resource: string): Promise<AxiosResponse> {
+    return ApiService.vueInstance.axios.get(`${resource}`).catch(error => {
+      throw new Error(`[KT] ApiService ${error}`);
+    });
   }
 
   /**
@@ -71,9 +76,10 @@ class ApiService {
    */
   public static post(
     resource: string,
-    params: AxiosRequestConfig
+    data: object,
+    params?: AxiosRequestConfig
   ): Promise<AxiosResponse> {
-    return ApiService.vueInstance.axios.post(`${resource}`, params);
+    return ApiService.vueInstance.axios.post(`${resource}`, data, params);
   }
 
   /**
