@@ -13,7 +13,7 @@
                     className="d-flex flex-column flex-grow-1 my-lg-0 my-2 pr-3"
                   >
                     <div class="row mb-3">
-                      <div class="col-6">
+                      <div class="col-lg-6">
                         <img
                           src="media/logos/Pryal Horizontal Tagline.png"
                           class="mw-200px mb-5"
@@ -50,124 +50,139 @@
                           <hr class="mt-5" />
                         </div>
                         <div class="row">
-                          <div class="col-12 row mb-3">
+                          <div class="col-6 col-lg-12 mb-3">
+                            <div class="row">
                             <!--begin::Label-->
-                            <label
-                              class="
-                                col-md-5
-                                fs-5
-                                fw-bold
-                                align-middle
-                                text-muted
-                              "
-                              >Marca</label
-                            >
-                            <!--end::Label-->
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
+                                >Marca</label
+                              >
+                              <!--end::Label-->
 
-                            <!--begin::Col-->
-                            <label class="col-md-7 fs-5 fw-bold text-dark">{{
-                              model.laudo.marca
-                            }}</label>
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark">{{
+                                model.laudo.marca
+                              }}</label>
+                            </div>
                           </div>
-                          <div class="col-12 row mb-3">
+                          <div class="col-6 col-lg-12 mb-3">
                             <!--begin::Label-->
-                            <label
-                              class="
-                                col-md-5
-                                fs-5
-                                fw-bold
-                                align-middle
-                                text-muted
-                              "
-                              >Modelo</label
-                            >
-                            <!--end::Label-->
+                            <div class="row">
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
+                                >Modelo</label
+                              >
+                              <!--end::Label-->
 
-                            <!--begin::Col-->
-                            <label class="col-md-7 fs-5 fw-bold text-dark">{{
-                              model.laudo.modelo
-                            }}</label>
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark">{{
+                                model.laudo.modelo
+                              }}</label>
+                            </div>
                           </div>
-                          <div class="col-12 row mb-3">
-                            <!--begin::Label-->
-                            <label
-                              class="
-                                col-md-5
-                                fs-5
-                                fw-bold
-                                align-middle
-                                text-muted
-                              "
-                              >Km</label
-                            >
-                            <!--end::Label-->
+                          <div class="col-6 col-lg-12 mb-3">
+                            <div class="row">
+                              <!--begin::Label-->
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
+                                >Km</label
+                              >
+                              <!--end::Label-->
 
-                            <!--begin::Col-->
-                            <label class="col-md-7 fs-5 fw-bold text-dark">{{
-                              model.laudo.quilometragem
-                            }}</label>
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark">{{
+                                model.laudo.quilometragem
+                              }}</label>
+                            </div>
                           </div>
-                          <div class="col-12 row mb-3">
+                          <div class="col-6 col-lg-12 mb-3">
+                            <div class="row">
                             <!--begin::Label-->
-                            <label
-                              class="
-                                col-md-5
-                                fs-5
-                                fw-bold
-                                align-middle
-                                text-muted
-                              "
-                              >Ano Fab/Mod</label
-                            >
-                            <!--end::Label-->
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
+                                >Ano Fab/Mod</label
+                              >
+                              <!--end::Label-->
 
-                            <!--begin::Col-->
-                            <label class="col-md-7 fs-5 fw-bold text-dark"
-                              >{{ model.laudo.anoFabricacao }} /
-                              {{ model.laudo.anoModelo }}</label
-                            >
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark"
+                                >{{ model.laudo.anoFabricacao }} /
+                                {{ model.laudo.anoModelo }}</label
+                              >
+                            </div>
                           </div>
-                          <div class="col-12 row mb-3">
-                            <!--begin::Label-->
-                            <label
-                              class="
-                                col-md-5
-                                fs-5
-                                fw-bold
-                                align-middle
-                                text-muted
-                              "
-                              >Chassi</label
-                            >
-                            <!--end::Label-->
+                          <div class="col-6 col-lg-12 mb-3">
+                            <div class="row">
+                              <!--begin::Label-->
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
+                                >Chassi</label
+                              >
+                              <!--end::Label-->
 
-                            <!--begin::Col-->
-                            <label class="col-md-7 fs-5 fw-bold text-dark">{{
-                              model.laudo.chassi
-                            }}</label>
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark">{{
+                                model.laudo.chassi
+                              }}</label>
+                            </div>
                           </div>
-                          <div class="col-12 row mb-3">
-                            <!--begin::Label-->
-                            <label
-                              class="
-                                col-md-5
-                                fs-5
-                                fw-bold
-                                align-middle
-                                text-muted
-                              "
-                              >Placa</label
-                            >
-                            <!--end::Label-->
+                          <div class="col-6 col-lg-12 mb-3">
+                            <div class="row">
+                              <!--begin::Label-->
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
+                                >Placa</label
+                              >
+                              <!--end::Label-->
 
-                            <!--begin::Col-->
-                            <label class="col-md-7 fs-5 fw-bold text-dark">{{
-                              model.laudo.placa
-                            }}</label>
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark">{{
+                                model.laudo.placa
+                              }}</label>
+                            </div>
                           </div>
                         </div>
+                        <div class="row d-block d-lg-none">
+                          <hr />
+                        </div>
                       </div>
-                      <div class="col-6">
+                      <div class="col-lg-6">
                         <div class="row">
                           <div class="col-7">
                             <div
@@ -335,7 +350,7 @@
                       <div class="col-8">
                         <div class="card border mb-3">
                           <div className="card-body d-flex flex-column">
-                            <h2>{{ categoria.categoria }}</h2>
+                            <h5>{{ categoria.categoria }}</h5>
                             <div
                               class="d-flex justify-content-between align-items-center"
                               v-for="(item, indexItem) in categoria.items"
@@ -365,10 +380,10 @@
                       <div class="col-4">
                         <div class="card border mb-3">
                           <div className="card-body">
-                            <h2>Fotos</h2>
+                            <h5>Fotos</h5>
                             <div class="row">
                               <div
-                                class="col-6"
+                                class="col-lg-6"
                                 v-for="(evidencia,
                                 indexEvidencia) in getImagensCategoria(
                                   categoria.categoria
