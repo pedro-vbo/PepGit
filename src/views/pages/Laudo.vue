@@ -187,8 +187,19 @@ export default defineComponent({
     }
 
     const excluir = () => {
-      ApiService.delete("/analise/excluir/" + analiseId).then(({ data }) => {
-        route.push({ name: "Dashboard" });
+      Swal.fire({
+        title: "Deseja realmente excluir esse laudo?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, deletar!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          ApiService.delete("/analise/excluir/" + analiseId).then(
+            () => {
+              Swal.fire("Deletado!", "Esse laudo foi excluído", "success");
+            }
+          );
+        }
       });
     };
 
