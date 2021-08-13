@@ -11,9 +11,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title d-flex flex-column align-items-start">
-            <span v-if="isCadastroNovo">
-              Cadastro de novo cliente
-            </span>
+            <span v-if="isCadastroNovo"> Cadastro de novo cliente </span>
             <span v-else>Atualizar cadastro de {{ cliente.nome }}</span>
             <button class="btn btn-sm btn-link p-0" @click="excluir">
               Excluir
@@ -271,7 +269,7 @@ export default defineComponent({
   name: "ClienteCadastro",
   components: { Field, Form },
   props: {
-    cliente: Object
+    cliente: Object,
   },
   setup(props) {
     const cadastro = ref({});
@@ -284,46 +282,23 @@ export default defineComponent({
 
     Yup.setLocale(pt);
     const validacoes = Yup.object().shape({
-      formNome: Yup.string()
-        .required()
-        .label("Nome"),
-      formCpf: Yup.string()
-        .required()
-        .label("CPF"),
-      formEmail: Yup.string()
-        .required()
-        .email()
-        .label("Email"),
+      formNome: Yup.string().required().label("Nome"),
+      formCpf: Yup.string().required().label("CPF"),
+      formEmail: Yup.string().required().email().label("Email"),
       formDtnascimento: Yup.date()
         .required()
         .label("Data de nascimento")
-        .default(function() {
+        .default(function () {
           return new Date();
         }),
-      formMarca: Yup.string()
-        .required()
-        .label("Marca"),
-      formModelo: Yup.string()
-        .required()
-        .label("Modelo"),
-      formQuilimetragem: Yup.number()
-        .required()
-        .label("Quilometragem"),
-      formAnofabricacao: Yup.number()
-        .required()
-        .label("Ano fabricação"),
-      formAnomodelo: Yup.number()
-        .required()
-        .label("Ano modelo"),
-      formPlaca: Yup.string()
-        .required()
-        .label("Placa"),
-      formRenavam: Yup.string()
-        .required()
-        .label("Renavam"),
-      formChassi: Yup.string()
-        .required()
-        .label("Chassi")
+      formMarca: Yup.string().required().label("Marca"),
+      formModelo: Yup.string().required().label("Modelo"),
+      formQuilimetragem: Yup.number().required().label("Quilometragem"),
+      formAnofabricacao: Yup.number().required().label("Ano fabricação"),
+      formAnomodelo: Yup.number().required().label("Ano modelo"),
+      formPlaca: Yup.string().required().label("Placa"),
+      formRenavam: Yup.string().required().label("Renavam"),
+      formChassi: Yup.string().required().label("Chassi"),
     });
 
     onMounted(() => {
@@ -360,8 +335,8 @@ export default defineComponent({
           buttonsStyling: false,
           confirmButtonText: "Ok, proximo!",
           customClass: {
-            confirmButton: "btn fw-bold btn-light-primary"
-          }
+            confirmButton: "btn fw-bold btn-light-primary",
+          },
         }).then(() => {
           closeModal.value?.click();
         });
@@ -376,8 +351,8 @@ export default defineComponent({
           buttonsStyling: false,
           confirmButtonText: "Ok, proximo!",
           customClass: {
-            confirmButton: "btn fw-bold btn-light-primary"
-          }
+            confirmButton: "btn fw-bold btn-light-primary",
+          },
         }).then(() => {
           closeModal.value?.click();
         });
@@ -385,12 +360,40 @@ export default defineComponent({
     };
 
     const excluir = () => {
-      ApiService.delete("/clientes/excluir/" + clienteProp.cliente.id).then(
-        ({ data }) => {
-          closeModal.value?.click();
+      Swal.fire({
+        title: "Deseja realmente excluir esse cliente?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, deletar!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          ApiService.delete("/clientes/excluir/" + clienteProp.cliente.id).then(
+            () => {
+              closeModal.value?.click();
+              Swal.fire("Deletado!", "Esse cliente foi excluído", "success");
+            }
+          );
         }
-      );
+      });
     };
+
+    //   Swal.fire({
+    //     text: "Deseja realmente excluir esse cliente?",
+    //     icon: "warning",
+    //     buttonsStyling: false,
+    //     confirmButtonText: "Sim, excluir!",
+    //     customClass: {
+    //       confirmButton: "btn fw-bold btn-light-primary"
+    //     }
+    //   }).then(() => {
+    //     console.log('excluiu')
+    //     // ApiService.delete("/clientes/excluir/" + clienteProp.cliente.id).then(
+    //     //   ({ data }) => {
+    //     //     closeModal.value?.click();
+    //     //   }
+    //     // );
+    //   });
+    // };
 
     return {
       cadastrar,
@@ -403,8 +406,8 @@ export default defineComponent({
       form,
       Form,
       Field,
-      excluir
+      excluir,
     };
-  }
+  },
 });
 </script>

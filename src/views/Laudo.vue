@@ -23,12 +23,13 @@
                             class="col-6 d-flex flex-column align-items-center py-5"
                           >
                             <h3>Parecer final</h3>
-                            <span class="d-flex align-items-center text-success"
-                              ><i
+                            <span class="d-flex align-items-center text-info">
+                              <!-- <i
                                 class="fa fa-check-circle text-success me-3"
                                 style="font-size: 50px"
                               ></i>
-                              Aprovado
+                              Aprovado -->
+                              {{ model.laudo.parecerFinal }}
                             </span>
                             <span class="mt-5"
                               ><span class="fs-8 text-muted"
@@ -146,6 +147,27 @@
                                   align-middle
                                   text-muted
                                 "
+                                >Placa</label
+                              >
+                              <!--end::Label-->
+
+                              <!--begin::Col-->
+                              <label class="col-lg-7 fs-5 fw-bold text-dark">{{
+                                model.laudo.placa
+                              }}</label>
+                            </div>
+                          </div>
+                          <div class="col-6 col-lg-12 mb-3">
+                            <div class="row">
+                              <!--begin::Label-->
+                              <label
+                                class="
+                                  col-lg-5
+                                  fs-5
+                                  fw-bold
+                                  align-middle
+                                  text-muted
+                                "
                                 >Chassi</label
                               >
                               <!--end::Label-->
@@ -167,13 +189,13 @@
                                   align-middle
                                   text-muted
                                 "
-                                >Placa</label
+                                >Renavam</label
                               >
                               <!--end::Label-->
 
                               <!--begin::Col-->
                               <label class="col-lg-7 fs-5 fw-bold text-dark">{{
-                                model.laudo.placa
+                                model.laudo.renavam
                               }}</label>
                             </div>
                           </div>
@@ -225,7 +247,7 @@
                                 </div>
                                 <img
                                   class="mw-100"
-                                  src="https://rentcars.usteed.com.br/wp-content/uploads/2019/02/GOL-2012-2013-Preto-A-600x410.jpg"
+                                  :src="model.laudo.imagem"
                                   alt=""
                                 />
                                 <div
@@ -352,11 +374,12 @@
                           <div className="card-body d-flex flex-column">
                             <h3>{{ categoria.categoria }}</h3>
                             <div
-                              class="d-flex justify-content-between align-items-center"
+                              class="row"
                               v-for="(item, indexItem) in categoria.items"
                               :key="indexItem"
                             >
                               <span
+                                class="col-lg-7 col-md-6"
                                 :class="[
                                   item.positivo
                                     ? 'text-success'
@@ -372,7 +395,7 @@
                                 ></i>
                                 {{ item.item }}</span
                               >
-                              <span>{{ item.observacao }}</span>
+                              <span class="col-lg-5 col-md-6">{{ item.observacao }}</span>
                             </div>
                           </div>
                         </div>
@@ -383,7 +406,7 @@
                             <h3>Fotos</h3>
                             <div class="row">
                               <div
-                                class="col-6"
+                                class="col-6 p-2"
                                 v-for="(evidencia,
                                 indexEvidencia) in getImagensCategoria(
                                   categoria.categoria
@@ -444,7 +467,7 @@ export default defineComponent({
       if (!list) return;
       return list.filter(x => {
         return x.items.some(y => y.positivo === false);
-      });
+      })
     };
 
     const getItemsComProblema = list => {
