@@ -17,6 +17,7 @@
 @import "~@vueform/multiselect/themes/default.css";
 @import "~prism-themes/themes/prism-shades-of-purple.css";
 @import "~element-plus/lib/theme-chalk/index.css";
+@import "~viewerjs/dist/viewer.css";
 
 // Main demo style scss
 @import "assets/sass/plugins";

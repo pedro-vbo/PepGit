@@ -14,7 +14,7 @@
         data-kt-menu-placement="bottom-end"
         data-kt-menu-flip="bottom"
       >
-        <img src="media/avatars/150-2.jpg" alt="metronic" />
+        <img :src="imgPerfil" alt="perfil" />
       </div>
       <KTUserMenu></KTUserMenu>
       <!--end::Menu-->
@@ -25,13 +25,22 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { useStore } from "vuex";
 import KTUserMenu from "@/layout/header/partials/UserMenu.vue";
 
 export default defineComponent({
   name: "topbar",
   components: {
     KTUserMenu
+  },
+  setup() {
+    const store = useStore();
+    const user = store.getters.currentUser;
+    const imgPerfil = ref(user.imagem);
+    return {
+      imgPerfil
+    }
   }
 });
 </script>

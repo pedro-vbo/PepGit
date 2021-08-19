@@ -31,8 +31,13 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/Laudo.vue")
   },
   {
-    path: "/sign-in",
-    name: "sign-in",
+    path: "/check-laudo",
+    name: "check-laudo",
+    component: () => import("@/views/CheckLaudo.vue")
+  },
+  {
+    path: "/login",
+    name: "login",
     component: () => import("@/views/auth/SignIn.vue")
   },
   {
@@ -66,7 +71,7 @@ router.beforeEach(() => {
   // reset config to initial state
   store.commit(Mutations.RESET_LAYOUT_CONFIG);
 
-  store.dispatch(Actions.VERIFY_AUTH);
+  //store.dispatch(Actions.VERIFY_AUTH);
 
   // Scroll page to top on every route change
   setTimeout(() => {

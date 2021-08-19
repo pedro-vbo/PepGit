@@ -101,11 +101,15 @@ export default defineComponent({
       return store.getters.pageBreadcrumbPath;
     });
 
+    const checkAuth = () => {
+      if (!store.getters.isUserAuthenticated) {
+        router.push({ name: "login" });
+      }
+    };
+
     onMounted(() => {
       // // check if current user is authenticated
-      if (store.getters.isAuthenticated) {
-        router.push({ name: "sign-in" });
-      }
+      checkAuth();
 
       // Simulate the delay page loading
       setTimeout(() => {
@@ -120,9 +124,7 @@ export default defineComponent({
         MenuComponent.hideDropdowns(undefined);
 
         // // check if current user is authenticated
-        if (store.getters.isAuthenticated) {
-          router.push({ name: "sign-in" });
-        }
+        checkAuth();
       }
     );
 

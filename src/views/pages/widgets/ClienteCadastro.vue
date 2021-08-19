@@ -322,11 +322,6 @@ export default defineComponent({
       cadastro.value["veiculoId"] = veiculoId;
     });
 
-    saveToken(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlBlZHJvIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjUwOTk2MzQsImV4cCI6MTY1NjYzNTYzNCwiaWF0IjoxNjI1MDk5NjM0fQ.SFpPm7a5AIKjIkb0rwXIi5DxqI_pjAaNG4XtPw-_VJk"
-    );
-    ApiService.setHeader();
-
     const cadastrar = () => {
       ApiService.post("clientes/cadastrar", cadastro.value).then(() => {
         Swal.fire({

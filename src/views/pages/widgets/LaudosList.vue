@@ -12,11 +12,13 @@
             className="d-flex align-items-center w-100 justify-content-between"
           >
             <div className="d-flex flex-column flex-grow-1 my-lg-0 my-2 pr-3">
-              <span class="fs-5"
-                >{{ laudo.marca }} - {{ laudo.modelo }} |
-                {{ laudo.placa }}</span
-              >
-              <span>{{ laudo.nome }}</span>
+              <a :href="`https://app.pryal.com.br/#/laudo/${laudo.id}`" target="_blank">
+                <span class="fs-5"
+                  >{{ laudo.marca }} - {{ laudo.modelo }} |
+                  {{ laudo.placa }}</span
+                ></a>
+                <span>{{ laudo.nome }}</span>
+              
             </div>
             <router-link
               class="btn btn-sm btn-light-primary"
