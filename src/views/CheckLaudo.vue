@@ -6,7 +6,7 @@
     <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
       <!--begin::Logo-->
       <a href="#" class="mb-12">
-        <img alt="Logo" src="media/logos/pryal.png" class="h-100px" />
+        <img alt="Logo" src="media/logos/Pryal.png" class="h-100px" />
       </a>
       <!--end::Logo-->
 
@@ -151,7 +151,7 @@ export default defineComponent({
     //Form submit function
     const onSubmitLogin = values => {
       // Clear existing errors
-      ApiService.get("laudo/procurar", ).then(({ data }) => {
+      ApiService.post("laudo/procurar", values).then(({ data }) => {
        router.push({ name: "laudo", params: { laudoId: data}});
       }).catch(() => {
         Swal.fire({

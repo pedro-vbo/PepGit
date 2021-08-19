@@ -51,6 +51,7 @@ class ApiService {
     resource: string,
     params: AxiosRequestConfig
   ): Promise<AxiosResponse> {
+    this.setHeader();
     return ApiService.vueInstance.axios.get(resource, params).catch(error => {
       throw new Error(`[KT] ApiService ${error}`);
     });
@@ -63,6 +64,7 @@ class ApiService {
    * @returns Promise<AxiosResponse>
    */
   public static get(resource: string): Promise<AxiosResponse> {
+    this.setHeader();
     return ApiService.vueInstance.axios.get(`${resource}`).catch(error => {
       throw new Error(`[KT] ApiService ${error}`);
     });
@@ -79,6 +81,7 @@ class ApiService {
     data: object,
     params?: AxiosRequestConfig
   ): Promise<AxiosResponse> {
+    this.setHeader();
     return ApiService.vueInstance.axios.post(`${resource}`, data, params);
   }
 
@@ -94,6 +97,7 @@ class ApiService {
     slug: string,
     params: AxiosRequestConfig
   ): Promise<AxiosResponse> {
+    this.setHeader();
     return ApiService.vueInstance.axios.put(`${resource}/${slug}`, params);
   }
 
@@ -107,6 +111,7 @@ class ApiService {
     resource: string,
     params: AxiosRequestConfig
   ): Promise<AxiosResponse> {
+    this.setHeader();
     return ApiService.vueInstance.axios.put(`${resource}`, params);
   }
 
@@ -116,6 +121,7 @@ class ApiService {
    * @returns Promise<AxiosResponse>
    */
   public static delete(resource: string): Promise<AxiosResponse> {
+    this.setHeader();
     return ApiService.vueInstance.axios.delete(resource).catch(error => {
       throw new Error(`[RWV] ApiService ${error}`);
     });
