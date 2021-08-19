@@ -151,7 +151,7 @@ export default defineComponent({
     //Form submit function
     const onSubmitLogin = values => {
       // Clear existing errors
-      ApiService.get("laudo/procurar", ).then(({ data }) => {
+      ApiService.post("laudo/procurar", values).then(({ data }) => {
        router.push({ name: "laudo", params: { laudoId: data}});
       }).catch(() => {
         Swal.fire({
