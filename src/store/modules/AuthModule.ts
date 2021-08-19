@@ -4,11 +4,11 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface User {
-  name: string;
-  surname: string;
+  nome: string;
+  id: string;
   email: string;
-  password: string;
   token: string;
+  imagem: string;
 }
 
 export interface UserAuthInfo {
@@ -28,7 +28,9 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
    * @returns User
    */
   get currentUser(): User {
-    return this.user;
+    if (this.user.id) return this.user;
+    const userString = window.localStorage.getItem("USER") || "{}";
+    return JSON.parse(userString) as User;
   }
 
   /**
@@ -57,17 +59,13 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
     this.isAuthenticated = true;
     this.user = user;
     this.errors = [];
+    window.localStorage.setItem("USER", JSON.stringify(this.user));
     JwtService.saveToken(this.user.token);
   }
 
   @Mutation
   [Mutations.SET_USER](user) {
     this.user = user;
-  }
-
-  @Mutation
-  [Mutations.SET_PASSWORD](password) {
-    this.user.password = password;
   }
 
   @Mutation
@@ -131,7 +129,6 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
 
   @Action
   [Actions.VERIFY_AUTH]() {
-    return true;
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("verify")

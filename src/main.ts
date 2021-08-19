@@ -16,6 +16,7 @@ import { initApexCharts } from "@/core/plugins/apexcharts";
 import { initVueTheMask } from "@/core/plugins/vue-the-mask";
 import { initInlineSvg } from "@/core/plugins/inline-svg";
 import { initVeeValidate } from "@/core/plugins/vee-validate.ts";
+import VueViewer from 'v-viewer'
 
 import "@/core/plugins/keenthemes.ts";
 import "@/core/plugins/prismjs.ts";
@@ -26,6 +27,8 @@ const app = createApp(App);
 app.use(store);
 app.use(router);
 app.use(ElementPlus);
+app.use(VueViewer);
+
 
 ApiService.init(app);
 initVueTheMask(app);

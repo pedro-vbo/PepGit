@@ -272,11 +272,12 @@
                                     d-flex
                                     justify-content-between
                                     mt-3
+                                    position-relative
                                   "
                                   :class="[
                                     getItemsOk(categoria.items) ==
                                     categoria.items.length
-                                      ? 'bg-secondary'
+                                      ? 'bg-success'
                                       : 'bg-warning'
                                   ]"
                                   v-for="(categoria, index) in model.laudo
@@ -285,7 +286,7 @@
                                 >
                                   <label>{{ categoria.categoria }}</label>
                                   <label
-                                    >{{ getItemsOk(categoria.items) }}/{{
+                                    ><span v-if="getItemsOk(categoria.items) !== categoria.items.length" class="badge badge-circle badge-white me-1"><i class="fa fa-exclamation-triangle  text-warning"></i></span>{{ getItemsOk(categoria.items) }}/{{
                                       categoria.items.length
                                     }}</label
                                   >
@@ -355,6 +356,8 @@
                                     categoria.items
                                   )"
                                   :key="indexItem"
+                                  role="button"
+                                  @click="goToMensagemProblema(item.item)"
                                   ><span class="bullet bg-warning"></span>
                                   {{ item.item }}</span
                                 >
@@ -377,6 +380,7 @@
                               class="row"
                               v-for="(item, indexItem) in categoria.items"
                               :key="indexItem"
+                              :id="removeWhiteSpace(item.item)"
                             >
                               <span
                                 class="col-lg-7 col-md-6"
@@ -401,10 +405,20 @@
                         </div>
                       </div>
                       <div class="col-lg-4">
-                        <div class="card border mb-3">
+                        <div class="card border mb-3" v-if="getImagensCategoria(
+                                  categoria.categoria
+                                ).length > 0">
                           <div className="card-body">
                             <h3>Fotos</h3>
-                            <div class="row">
+                            <div class="row images cursor" v-viewer>
+                                <div class="col-6 p-2" v-for="src in getImagensCategoria(
+                                  categoria.categoria
+                                )" :key="src">
+                                  <img class="mw-100" role="button" :src="src">
+                                </div>
+                              
+    
+                              <!-- <hr>
                               <div
                                 class="col-6 p-2"
                                 v-for="(evidencia,
@@ -413,8 +427,8 @@
                                 )"
                                 :key="indexEvidencia"
                               >
-                                <img :src="evidencia.imagem" class="mw-100" />
-                              </div>
+                                <img :src="evidencia" class="mw-100" />
+                              </div> -->
                             </div>
                           </div>
                         </div>
@@ -436,6 +450,7 @@ import { defineComponent, reactive } from "vue";
 import { saveToken } from "@/core/services/JwtService";
 import ApiService from "@/core/services/ApiService";
 import { useRouter } from "vue-router";
+import { ElementAnimateUtil } from "@/assets/ts/_utils/ElementAnimateUtil";
 
 export default defineComponent({
   name: "laudo",
@@ -455,6 +470,17 @@ export default defineComponent({
         evidencias: []
       }
     });
+
+    const removeWhiteSpace = (text) => {
+      return text.replace(' ', '');
+    }
+
+    const goToMensagemProblema = (item) => {
+      ElementAnimateUtil.scrollTo(
+        document.getElementById(removeWhiteSpace(item)),
+        24
+      );
+    }
 
     const getItemsOk = list => {
       if (!list) return;
@@ -480,13 +506,8 @@ export default defineComponent({
     const getImagensCategoria = categoria => {
       return model.laudo.evidencias.filter(x => {
         return x["categoria"] == categoria;
-      });
+      }).map(x => { return x["imagem"] });
     };
-
-    saveToken(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlBlZHJvIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjUwOTk2MzQsImV4cCI6MTY1NjYzNTYzNCwiaWF0IjoxNjI1MDk5NjM0fQ.SFpPm7a5AIKjIkb0rwXIi5DxqI_pjAaNG4XtPw-_VJk"
-    );
-    ApiService.setHeader();
 
     ApiService.get(`laudo/${laudoId}`).then(({ data }) => {
       model.laudo = data;
@@ -497,7 +518,9 @@ export default defineComponent({
       getItemsOk,
       getCategoriaComProblema,
       getItemsComProblema,
-      getImagensCategoria
+      getImagensCategoria,
+      goToMensagemProblema,
+      removeWhiteSpace
     };
   }
 });

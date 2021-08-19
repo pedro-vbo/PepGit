@@ -1,7 +1,6 @@
 <template>
   <div
     class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed"
-    style="background-image: url('media/illustrations/progress-hd.png')"
   >
     <!--begin::Content-->
     <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
@@ -24,38 +23,28 @@
           <div class="text-center mb-10">
             <!--begin::Title-->
             <h1 class="text-dark mb-3">
-              Entrar no Painel Administrador
+              Pesquisa de laudo
             </h1>
             <!--end::Title-->
-
-            <!--begin::Link-->
-            <div class="text-gray-400 fw-bold fs-4">
-              É novo?
-
-              <router-link to="/sign-up" class="link-primary fw-bolder">
-                Criar uma conta
-              </router-link>
-            </div>
-            <!--end::Link-->
           </div>
           <!--begin::Heading-->
           <!--begin::Input group-->
           <div class="fv-row mb-10">
             <!--begin::Label-->
-            <label class="form-label fs-6 fw-bolder text-dark">Email</label>
+            <label class="form-label fs-6 fw-bolder text-dark">Renavam</label>
             <!--end::Label-->
 
             <!--begin::Input-->
             <Field
               class="form-control form-control-lg form-control-solid"
               type="text"
-              name="login"
+              name="renavam"
               autocomplete="off"
             />
             <!--end::Input-->
             <div class="fv-plugins-message-container">
               <div class="fv-help-block">
-                <ErrorMessage name="email" />
+                <ErrorMessage name="renavam" />
               </div>
             </div>
           </div>
@@ -67,32 +56,24 @@
             <div class="d-flex flex-stack mb-2">
               <!--begin::Label-->
               <label class="form-label fw-bolder text-dark fs-6 mb-0"
-                >Senha</label
+                >Placa</label
               >
               <!--end::Label-->
 
-              <!--begin::Link-->
-              <router-link
-                to="/password-reset"
-                class="link-primary fs-6 fw-bolder"
-              >
-                Esqueceu a senha?
-              </router-link>
-              <!--end::Link-->
             </div>
             <!--end::Wrapper-->
 
             <!--begin::Input-->
             <Field
               class="form-control form-control-lg form-control-solid"
-              type="password"
-              name="senha"
+              type="text"
+              name="placa"
               autocomplete="off"
             />
             <!--end::Input-->
             <div class="fv-plugins-message-container">
               <div class="fv-help-block">
-                <ErrorMessage name="password" />
+                <ErrorMessage name="placa" />
               </div>
             </div>
           </div>
@@ -108,11 +89,11 @@
               class="btn btn-lg btn-primary w-100 mb-5"
             >
               <span class="indicator-label">
-                Entrar
+                Procurar
               </span>
 
               <span class="indicator-progress">
-                Aguarde...
+                Procurando...
                 <span
                   class="spinner-border spinner-border-sm align-middle ms-2"
                 ></span>
@@ -133,7 +114,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { ErrorMessage, Field, Form } from "vee-validate";
-import { Actions } from "@/store/enums/StoreEnums.ts";
+import ApiService from "@/core/services/ApiService";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
@@ -141,7 +122,7 @@ import * as Yup from "yup";
 import { pt } from 'yup-locale-pt';
 
 export default defineComponent({
-  name: "login",
+  name: "check-laudo",
   components: {
     Field,
     Form,
@@ -157,49 +138,32 @@ export default defineComponent({
 
     //Create form validation object
     const login = Yup.object().shape({
-      login: Yup.string()
-        .email()
+      renavam: Yup
+        .number()
         .required()
-        .label("Email"),
-      senha: Yup.string()
-        .min(4)
+        .label("Renavam"),
+      placa: Yup.string()
+        .min(7)
         .required()
-        .label("Senha")
+        .label("Placa")
     });
 
     //Form submit function
     const onSubmitLogin = values => {
       // Clear existing errors
-      store.dispatch(Actions.LOGOUT);
-
-      if (submitButton.value) {
-        // Activate indicator
-        submitButton.value.setAttribute("data-kt-indicator", "on");
-      }
-
-      // Dummy delay
-      setTimeout(() => {
-        // Send login request
-        store
-          .dispatch(Actions.LOGIN, values)
-          .then(() => {
-            router.push({ name: "Dashboard" });
-          })
-          .catch(() => {
-            Swal.fire({
-              text: "Email e/ou senha inválidos",
-              icon: "error",
-              buttonsStyling: false,
-              confirmButtonText: "Tente de novo!",
-              customClass: {
-                confirmButton: "btn fw-bold btn-light-danger"
-              }
-            });
-          });
-
-        //Deactivate indicator
-        submitButton.value?.removeAttribute("data-kt-indicator");
-      }, 2000);
+      ApiService.get("laudo/procurar", ).then(({ data }) => {
+       router.push({ name: "laudo", params: { laudoId: data}});
+      }).catch(() => {
+        Swal.fire({
+          text: "Laudo não encontrado, verifique os dados informados",
+          icon: "error",
+          buttonsStyling: false,
+          confirmButtonText: "Tente de novo!",
+          customClass: {
+            confirmButton: "btn fw-bold btn-light-danger"
+          }
+        });
+      });
     };
 
     return {
