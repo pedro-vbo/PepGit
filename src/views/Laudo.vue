@@ -378,12 +378,15 @@
                             <h3>{{ categoria.categoria }}</h3>
                             <div
                               class="row"
+                              :class="{'bg-light': indexItem % 2 != 0}"
                               v-for="(item, indexItem) in categoria.items"
                               :key="indexItem"
                               :id="removeWhiteSpace(item.item)"
                             >
                               <span
+                                @click="goToMensagemProblema(item.item)"
                                 class="col-lg-7 col-md-6"
+                                role="button"
                                 :class="[
                                   item.positivo
                                     ? 'text-success'
@@ -411,10 +414,11 @@
                           <div className="card-body">
                             <h3>Fotos</h3>
                             <div class="row images cursor" v-viewer>
-                                <div class="col-6 p-2" v-for="src in getImagensCategoria(
+                                <div class="col-6 p-2" v-for="img in getImagensCategoria(
                                   categoria.categoria
-                                )" :key="src">
-                                  <img class="mw-100" role="button" :src="src">
+                                )" :key="img.imagem">
+                                  <img class="mw-100" role="button" :id="removeWhiteSpace(img.item)" :src="img.imagem">
+                                  <p>{{img.item}}</p>
                                 </div>
                               
     
@@ -506,7 +510,7 @@ export default defineComponent({
     const getImagensCategoria = categoria => {
       return model.laudo.evidencias.filter(x => {
         return x["categoria"] == categoria;
-      }).map(x => { return x["imagem"] });
+      }).map(x => { return x });
     };
 
     ApiService.get(`laudo/${laudoId}`).then(({ data }) => {

@@ -69,6 +69,7 @@
               type="text"
               name="placa"
               autocomplete="off"
+              v-mask="'AAA-#X##'"
             />
             <!--end::Input-->
             <div class="fv-plugins-message-container">
