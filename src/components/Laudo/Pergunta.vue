@@ -57,6 +57,51 @@
       v-model="resposta.observacao"
       @change="atualizarResposta"
     />
+    <div class="">
+      <!-- <h4>Fotos já adicionadas</h4> -->
+      <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
+        <template
+          v-for="(evidencia, index) in imagens"
+          :key="index"
+        > 
+          <img
+            :src="evidencia.url"
+            class="img-thumbnail mw-100px me-1"
+          />
+         </template>
+      </div>
+      <button
+        class="btn btn-sm btn-secondary d-flex align-items-center"
+        @click="
+          () => {
+            input.click();
+          }
+        "
+      >
+        <i class="fa fa-camera fs-3"></i>
+        <span>Adicionar imagens</span>
+      </button>
+      <input
+        type="file"
+        multiple="multiple"
+        @change="onFileAdd"
+        class="form-control-file d-none"
+        id="my-file"
+        :ref="
+          el => {
+            input = el;
+          }
+        "
+      />
+      <div class="border p-2 mt-3" v-if="previewList.length">
+        <h4>Imagens para adicionar:</h4>
+        <div class="d-flex flex-nowrap overflow-auto align-items-start mb-3">
+          <template v-for="(item, j) in previewList" :key="j">
+            <img :src="item" class="img-thumbnail mw-100px me-1" />
+          </template>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,16 +114,46 @@ export default defineComponent({
   name: "Pergunta",
   components: { Field },
   props: {
-    pergunta: Object
+    pergunta: Object,
+    imagens: Array
   },
   setup(context) {
-    const resposta = ref(context.pergunta);
-    function atualizarResposta() {
+    
+    const resposta = ref<any>(context.pergunta);
+    console.log("context.imagens", context.imagens);
+    resposta.value.imagens = [];
+    const input = ref<HTMLInputElement>();
+    const previewList = ref<any>([]);
+
+    const atualizarResposta = () => {
       emitter.emit("atualizarResposta", resposta.value);
-    }
+    };
+
+
+    const onFileAdd = event => {
+      const input = event.target;
+      let count = input.files.length;
+      let index = 0;
+      if (input.files) {
+        while (count--) {
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            previewList.value.push(e.target.result);
+            resposta.value.imagens.push(e.target.result.replace(/^data:image\/[a-z]+;base64,/, ""));
+            atualizarResposta();
+          };
+          reader.readAsDataURL(input.files[index]);
+          index++;
+        }
+      }
+    };
+
     return {
       Field,
       resposta,
+      input,
+      onFileAdd,
+      previewList,
       atualizarResposta
     };
   }

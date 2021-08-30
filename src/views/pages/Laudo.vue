@@ -69,6 +69,7 @@
               <div class="card-body position-relative mb-10">
                 <Pergunta
                   :pergunta="item"
+                  :imagens="getEvidencias(item.itemId)"
                   v-for="(item, index) in localizacao.items"
                   :key="index"
                 />
@@ -111,7 +112,7 @@ export default defineComponent({
   components: { Pergunta },
   setup() {
     const perguntas = ref<any>([]);
-    const analise = ref({});
+    const analise = ref<any>({});
     const resultado = ref<any>([]);
     const route = useRouter();
     const accordions = ref<any>([]);
@@ -203,6 +204,10 @@ export default defineComponent({
       });
     };
 
+    const getEvidencias = (id) => {
+      return analise.value.evidencias.filter(x => { return x.itemId === id });
+    };
+
     onBeforeUpdate(() => {
       accordions.value = [];
     });
@@ -274,6 +279,7 @@ export default defineComponent({
       getNumeroRespostasPorLocalizacao,
       enviarRespostas,
       excluir,
+      getEvidencias,
       isCadastroNovo
     };
   }
