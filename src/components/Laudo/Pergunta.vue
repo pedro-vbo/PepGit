@@ -60,15 +60,9 @@
     <div class="">
       <!-- <h4>Fotos já adicionadas</h4> -->
       <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
-        <template
-          v-for="(evidencia, index) in imagens"
-          :key="index"
-        > 
-          <img
-            :src="evidencia.url"
-            class="img-thumbnail mw-100px me-1"
-          />
-         </template>
+        <template v-for="(evidencia, index) in imagens" :key="index">
+          <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" />
+        </template>
       </div>
       <button
         class="btn btn-sm btn-secondary d-flex align-items-center"
@@ -88,7 +82,7 @@
         class="form-control-file d-none"
         id="my-file"
         :ref="
-          el => {
+          (el) => {
             input = el;
           }
         "
@@ -96,9 +90,14 @@
       <div class="border p-2 mt-3" v-if="previewList.length">
         <h4>Imagens para adicionar:</h4>
         <div class="d-flex flex-nowrap overflow-auto align-items-start mb-3">
-          <template v-for="(item, j) in previewList" :key="j">
-            <img :src="item" class="img-thumbnail mw-100px me-1" />
-          </template>
+          <div v-for="(item, j) in previewList" :key="j" class="overlay">
+            <div class="overlay-wrapper">
+              <img :src="item" class="img-thumbnail mw-100px me-1" />
+            </div>
+            <div class="overlay-layer bg-dark bg-opacity-10">
+              <button @click="removeImagem(j)"  class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -115,12 +114,10 @@ export default defineComponent({
   components: { Field },
   props: {
     pergunta: Object,
-    imagens: Array
+    imagens: Array,
   },
   setup(context) {
-    
     const resposta = ref<any>(context.pergunta);
-    console.log("context.imagens", context.imagens);
     resposta.value.imagens = [];
     const input = ref<HTMLInputElement>();
     const previewList = ref<any>([]);
@@ -129,8 +126,13 @@ export default defineComponent({
       emitter.emit("atualizarResposta", resposta.value);
     };
 
+    const removeImagem = (index) => {
+      previewList.value.splice(index, 1);
+      resposta.value.imagens.splice(index, 1);
+      atualizarResposta();
+    }
 
-    const onFileAdd = event => {
+    const onFileAdd = (event) => {
       const input = event.target;
       let count = input.files.length;
       let index = 0;
@@ -139,7 +141,9 @@ export default defineComponent({
           const reader = new FileReader();
           reader.onload = (e: any) => {
             previewList.value.push(e.target.result);
-            resposta.value.imagens.push(e.target.result.replace(/^data:image\/[a-z]+;base64,/, ""));
+            resposta.value.imagens.push(
+              e.target.result.replace(/^data:image\/[a-z]+;base64,/, "")
+            );
             atualizarResposta();
           };
           reader.readAsDataURL(input.files[index]);
@@ -154,8 +158,9 @@ export default defineComponent({
       input,
       onFileAdd,
       previewList,
-      atualizarResposta
+      atualizarResposta,
+      removeImagem
     };
-  }
+  },
 });
 </script>
