@@ -60,9 +60,14 @@
     <div class="">
       <!-- <h4>Fotos já adicionadas</h4> -->
       <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
-        <template v-for="(evidencia, index) in imagens" :key="index">
-          <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" />
-        </template>
+        <div v-for="(evidencia, index) in evidencias" :key="index" class="overlay">
+          <div class="overlay-wrapper">
+            <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" />
+          </div>
+          <div class="overlay-layer bg-dark bg-opacity-10">
+            <button @click="removeEvidencia(evidencia.id, index)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
       </div>
       <button
         class="btn btn-sm btn-secondary d-flex align-items-center"
@@ -108,6 +113,7 @@
 import { Field } from "vee-validate";
 import { defineComponent, ref } from "vue";
 import emitter from "tiny-emitter/instance";
+import ApiService from "@/core/services/ApiService";
 
 export default defineComponent({
   name: "Pergunta",
@@ -118,6 +124,7 @@ export default defineComponent({
   },
   setup(context) {
     const resposta = ref<any>(context.pergunta);
+    const evidencias = ref<any>(context.imagens);
     resposta.value.imagens = [];
     const input = ref<HTMLInputElement>();
     const previewList = ref<any>([]);
@@ -130,6 +137,13 @@ export default defineComponent({
       previewList.value.splice(index, 1);
       resposta.value.imagens.splice(index, 1);
       atualizarResposta();
+    }
+
+    const removeEvidencia = (id, index) => {
+      evidencias.value.splice(index, 1);
+      ApiService.delete("/evidencia/excluir/" + id).then(({ data }) => {
+        console.log('data', data)
+      });
     }
 
     const onFileAdd = (event) => {
@@ -157,9 +171,11 @@ export default defineComponent({
       resposta,
       input,
       onFileAdd,
+      evidencias,
       previewList,
       atualizarResposta,
-      removeImagem
+      removeImagem,
+      removeEvidencia
     };
   },
 });
