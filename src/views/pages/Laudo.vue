@@ -74,7 +74,7 @@
                   :key="index"
                 />
                 <button
-                  @click="enviarRespostas(localizacao, indexPergunta)"
+                  @click="enviarRespostas(localizacao, indexPergunta, $event)"
                   :disabled="
                     localizacao.items.length >
                       getNumeroRespostasPorLocalizacao(localizacao.localizacao)
@@ -132,7 +132,8 @@ export default defineComponent({
       }).length;
     }
 
-    async function enviarRespostas(loc, index) {
+    async function enviarRespostas(loc, index, event) {
+      console.log(event);
       if (veiculoId) {
         await ApiService.post(
           "/analise/cadastrar?veiculoId=" + veiculoId,
