@@ -476,7 +476,7 @@ export default defineComponent({
     });
 
     const removeWhiteSpace = (text) => {
-      return text.replace(' ', '');
+      return text?.replace(" ", "");
     }
 
     const goToMensagemProblema = (item) => {

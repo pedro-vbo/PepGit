@@ -205,7 +205,7 @@ export default defineComponent({
     };
 
     const getEvidencias = (id) => {
-      return analise.value.evidencias.filter(x => { return x.itemId === id });
+      return analise.value.evidencias?.filter(x => { return x.itemId === id });
     };
 
     onBeforeUpdate(() => {
