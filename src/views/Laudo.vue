@@ -417,7 +417,10 @@
                                 <div class="col-6 p-2" v-for="img in getImagensCategoria(
                                   categoria.categoria
                                 )" :key="img.imagem">
-                                  <img class="mw-100" role="button" :id="removeWhiteSpace(img.item)" :src="img.imagem">
+                                  <img class="mw-100 me-1" role="button" :id="removeWhiteSpace(img.item)" :src="img.imagem" v-if="isImage(img.imagem)">
+                                  <video class="mw-200px me-1" controls v-else>
+                                    <source :src="img.imagem" />
+                                  </video>
                                   <p>{{img.item}}</p>
                                 </div>
                               
@@ -475,6 +478,20 @@ export default defineComponent({
       }
     });
 
+    const isImage = (fileUrl) => {
+      const imgExtensions = ["jpg", "png", "jpeg", "bmp"];
+      const videoExtensions = ["mkv", "mp4", "webm"];
+      const lastDot = fileUrl.lastIndexOf(".");
+
+      const ext = fileUrl.substring(lastDot + 1);
+
+      if (imgExtensions.includes(ext)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     const removeWhiteSpace = (text) => {
       return text?.replace(" ", "");
     }
@@ -519,6 +536,7 @@ export default defineComponent({
     });
     return {
       model,
+      isImage,
       getItemsOk,
       getCategoriaComProblema,
       getItemsComProblema,
