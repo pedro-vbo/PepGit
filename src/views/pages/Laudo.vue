@@ -178,7 +178,7 @@ export default defineComponent({
         .catch(() => {
           Swal.fire({
             text: "Não foi possível registrar as informações",
-            icon: "danger",
+            icon: "error",
             buttonsStyling: false,
             confirmButtonText: "Ok :(",
             customClass: {

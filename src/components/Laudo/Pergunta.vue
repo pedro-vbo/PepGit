@@ -62,7 +62,10 @@
       <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
         <div v-for="(evidencia, index) in evidencias" :key="index" class="overlay">
           <div class="overlay-wrapper">
-            <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" />
+              <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" v-if="isImage(evidencia.url)" />
+              <video class="mw-200px me-1" controls v-else>
+                <source :src="evidencia.url" />
+              </video>
           </div>
           <div class="overlay-layer bg-dark bg-opacity-10">
             <button @click="removeEvidencia(evidencia.id, index)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
@@ -83,6 +86,7 @@
       <input
         type="file"
         multiple="multiple"
+        accept="video/*|image/*"
         @change="onFileAdd"
         class="form-control-file d-none"
         id="my-file"
@@ -95,9 +99,12 @@
       <div class="border p-2 mt-3" v-if="previewList.length">
         <h4>Imagens para adicionar:</h4>
         <div class="d-flex flex-nowrap overflow-auto align-items-start mb-3">
-          <div v-for="(item, j) in previewList" :key="j" class="overlay">
-            <div class="overlay-wrapper">
-              <img :src="item" class="img-thumbnail mw-100px me-1" />
+          <div v-for="(item, j) in previewList" :key="j" class="overlay1">
+            <div class="overlay-wrapper1">
+              <img :src="item" class="img-thumbnail mw-100px me-1" v-if="item.indexOf('data:image') > 0" />
+              <video class="mw-200px me-1" controls v-else>
+                <source :src="item" />
+              </video>
             </div>
             <div class="overlay-layer bg-dark bg-opacity-10">
               <button @click="removeImagem(j)"  class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
@@ -133,6 +140,20 @@ export default defineComponent({
       emitter.emit("atualizarResposta", resposta.value);
     };
 
+    const isImage = (fileUrl) => {
+      const imgExtensions = ["jpg", "png", "jpeg", "bmp"];
+      const videoExtensions = ["mkv", "mp4", "webm"];
+      const lastDot = fileUrl.lastIndexOf(".");
+
+      const ext = fileUrl.substring(lastDot + 1);
+
+      if (imgExtensions.includes(ext)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     const removeImagem = (index) => {
       previewList.value.splice(index, 1);
       resposta.value.imagens.splice(index, 1);
@@ -154,10 +175,17 @@ export default defineComponent({
         while (count--) {
           const reader = new FileReader();
           reader.onload = (e: any) => {
-            previewList.value.push(e.target.result);
-            resposta.value.imagens.push(
-              e.target.result.replace(/^data:image\/[a-z]+;base64,/, "")
-            );
+            const result = e.target.result;
+            previewList.value.push(result);
+            if (result.indexOf("data:image") > 1) {
+              resposta.value.imagens.push(
+                e.target.result.replace(/^data:image\/[a-z]+;base64,/, "")
+              );
+            } else {
+              resposta.value.imagens.push(
+                e.target.result.replace(/^data:video\/[a-z,0-9]+;base64,/, "")
+              );
+            }
             atualizarResposta();
           };
           reader.readAsDataURL(input.files[index]);
@@ -175,7 +203,8 @@ export default defineComponent({
       previewList,
       atualizarResposta,
       removeImagem,
-      removeEvidencia
+      removeEvidencia,
+      isImage
     };
   },
 });
