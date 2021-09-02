@@ -99,9 +99,9 @@
       <div class="border p-2 mt-3" v-if="previewList.length">
         <h4>Imagens para adicionar:</h4>
         <div class="d-flex flex-nowrap overflow-auto align-items-start mb-3">
-          <div v-for="(item, j) in previewList" :key="j" class="overlay1">
-            <div class="overlay-wrapper1">
-              <img :src="item" class="img-thumbnail mw-100px me-1" v-if="item.indexOf('data:image') > 0" />
+          <div v-for="(item, j) in previewList" :key="j" class="overlay">
+            <div class="overlay-wrapper">
+              <img :src="item" class="img-thumbnail mw-100px me-1" v-if="item.indexOf('data:image') >= 0" />
               <video class="mw-200px me-1" controls v-else>
                 <source :src="item" />
               </video>
@@ -177,7 +177,7 @@ export default defineComponent({
           reader.onload = (e: any) => {
             const result = e.target.result;
             previewList.value.push(result);
-            if (result.indexOf("data:image") > 1) {
+            if (result.indexOf("data:image") >= 0) {
               resposta.value.imagens.push(
                 e.target.result.replace(/^data:image\/[a-z]+;base64,/, "")
               );
