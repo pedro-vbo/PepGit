@@ -1,26 +1,33 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <router-view />
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<style lang="scss">
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+@import "~apexcharts/dist/apexcharts.css";
+@import "~quill/dist/quill.snow.css";
+@import "~animate.css";
+@import "~sweetalert2/dist/sweetalert2.css";
+@import "~nouislider/distribute/nouislider.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~socicon/css/socicon.css";
+@import "~line-awesome/dist/line-awesome/css/line-awesome.css";
+@import "~@yaireo/tagify/src/tagify.scss";
+@import "~dropzone/dist/dropzone.css";
+@import "~@vueform/multiselect/themes/default.css";
+@import "~prism-themes/themes/prism-shades-of-purple.css";
+@import "~element-plus/lib/theme-chalk/index.css";
+@import "~viewerjs/dist/viewer.css";
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+// Main demo style scss
+@import "assets/sass/plugins";
+@import "assets/sass/style";
 </style>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "app"
+});
+</script>
