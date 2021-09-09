@@ -272,7 +272,23 @@ export default defineComponent({
     cliente: Object,
   },
   setup(props) {
-    const cadastro = ref({});
+    const valoresIniciais = {
+      nome: null,
+      id: null,
+      cpf: null,
+      email: null,
+      dataDeNascimento: null,
+      veiculoId: null,
+      marca: null,
+      modelo: null,
+      quilometragem: null,
+      anoFabricacao: null,
+      anoModelo: null,
+      renavam: null,
+      placa: null,
+      chassi: null
+    }
+    const cadastro = ref<any>(JSON.parse(JSON.stringify(valoresIniciais)));
     const clienteProp = reactive<any>(props);
     const modal = ref<HTMLElement | null>(null);
     const closeModal = ref<HTMLButtonElement | null>(null);
@@ -304,7 +320,7 @@ export default defineComponent({
     onMounted(() => {
       modal.value?.addEventListener("hidden.bs.modal", () => {
         isCadastroNovo.value = true;
-        console.log(form.value);
+        cadastro.value = JSON.parse(JSON.stringify(valoresIniciais));
         form.value?.resetForm();
       });
     });
@@ -335,7 +351,18 @@ export default defineComponent({
         }).then(() => {
           closeModal.value?.click();
         });
-      });
+      })
+       .catch(({ response }) => {
+        Swal.fire({
+          text: response.data,
+          icon: "error",
+          buttonsStyling: false,
+          confirmButtonText: "Tente de novo!",
+          customClass: {
+            confirmButton: "btn fw-bold btn-light-danger"
+          }
+        });
+      })
     };
 
     const atualizar = () => {
