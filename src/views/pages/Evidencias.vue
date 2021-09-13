@@ -238,12 +238,13 @@ export default defineComponent({
     const route = useRouter();
     const model = reactive({
       perguntas: [
-        { text: "Conservação", value: "Conservacao" },
-        { text: "Estrutura", value: "Estrutura" },
-        { text: "Extra", value: "Extra" },
-        { text: "Funcionamento", value: "Funcionamento" },
         { text: "Identificação", value: "Identificacao" },
-        { text: "Pintura", value: "Pintura" }
+        { text: "Periféricos", value: "Perifericos" },
+        { text: "Pintura", value: "Pintura" },
+        { text: "Estrutura", value: "Estrutura" },
+        { text: "Conservação Externa", value: "ConservacaoExterna" },
+        { text: "Conservação Interna", value: "ConservacaoInterna" },
+        { text: "Funcionamento", value: "Funcionamento" }
       ],
       analiseId: computed(() => {
         return route.currentRoute.value.params.analiseId;
