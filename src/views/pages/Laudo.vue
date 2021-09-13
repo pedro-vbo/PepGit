@@ -75,10 +75,6 @@
                 />
                 <button
                   @click="enviarRespostas(localizacao, indexPergunta, $event)"
-                  :disabled="
-                    localizacao.items.length >
-                      getNumeroRespostasPorLocalizacao(localizacao.localizacao)
-                  "
                   class="
                     btn btn-success
                     position-absolute
@@ -223,6 +219,20 @@ export default defineComponent({
         } else {
           resultado.value.push(resposta);
         }
+      });
+
+      emitter.on("enviarImagem", async function(imagem, itemId, categoria) {
+        await ApiService.post(
+          "/evidencia/cadastrar",
+          {
+            analiseId: analiseId,
+            itemId: itemId,
+            categoria: categoria,
+            imagem: imagem
+          }
+        ).then(({ data }) => {
+          console.log('data imagem', data);
+        });
       });
 
       //let analiseNova = {...obj1, ...obj2};

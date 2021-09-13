@@ -298,23 +298,24 @@ export default defineComponent({
 
     Yup.setLocale(pt);
     const validacoes = Yup.object().shape({
-      formNome: Yup.string().required().label("Nome"),
-      formCpf: Yup.string().required().label("CPF"),
-      formEmail: Yup.string().required().email().label("Email"),
+      formNome: Yup.string().nullable().required().label("Nome"),
+      formCpf: Yup.string().nullable().required().label("CPF"),
+      formEmail: Yup.string().nullable().required().email().label("Email"),
       formDtnascimento: Yup.date()
         .required()
+        .nullable()
         .label("Data de nascimento")
         .default(function () {
           return new Date();
         }),
-      formMarca: Yup.string().required().label("Marca"),
+      formMarca: Yup.string().nullable().required().label("Marca"),
       formModelo: Yup.string().required().label("Modelo"),
-      formQuilimetragem: Yup.number().required().label("Quilometragem"),
-      formAnofabricacao: Yup.number().required().label("Ano fabricação"),
-      formAnomodelo: Yup.number().required().label("Ano modelo"),
-      formPlaca: Yup.string().required().label("Placa"),
-      formRenavam: Yup.string().required().label("Renavam"),
-      formChassi: Yup.string().required().label("Chassi"),
+      formQuilimetragem: Yup.number().nullable().required().label("Quilometragem"),
+      formAnofabricacao: Yup.number().nullable().required().label("Ano fabricação"),
+      formAnomodelo: Yup.number().nullable().required().label("Ano modelo"),
+      formPlaca: Yup.string().nullable().required().label("Placa"),
+      formRenavam: Yup.string().nullable().required().label("Renavam"),
+      formChassi: Yup.string().nullable().required().label("Chassi"),
     });
 
     onMounted(() => {

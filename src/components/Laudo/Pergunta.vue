@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column mb-10 bg-light rounded p-5">
     <span class="fw-bold fs-1">{{ resposta.item }}</span>
-    <span class="mb-3"> Categoria: {{ resposta.categoria }} </span>
+    <!-- <span class="mb-3"> Categoria: {{ resposta.categoria }} </span> -->
     <div class="d-flex align-items-center justify-content-start">
       <label
         class="form-check form-check-lg form-check-custom form-check-solid pe-5"
@@ -137,7 +137,12 @@ export default defineComponent({
     const previewList = ref<any>([]);
 
     const atualizarResposta = () => {
+      console.log('resposta', resposta.value);
       emitter.emit("atualizarResposta", resposta.value);
+    };
+
+    const enviarImagem = (imagem, itemId, categoria) => {
+      emitter.emit("enviarImagem", imagem, itemId, categoria);
     };
 
     const isImage = (fileUrl) => {
@@ -177,16 +182,15 @@ export default defineComponent({
           reader.onload = (e: any) => {
             const result = e.target.result;
             previewList.value.push(result);
+            let imagem = "";
             if (result.indexOf("data:image") >= 0) {
-              resposta.value.imagens.push(
-                e.target.result.replace(/^data:image\/[a-z]+;base64,/, "")
-              );
+              imagem = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");
             } else {
-              resposta.value.imagens.push(
-                e.target.result.replace(/^data:video\/[a-z,0-9]+;base64,/, "")
-              );
+              imagem = e.target.result.replace(/^data:video\/[a-z,0-9]+;base64,/, "");
             }
-            atualizarResposta();
+            //resposta.value.imagens.push(imagem);
+            enviarImagem(imagem, resposta.value.itemId, resposta.value.categoria);
+            //atualizarResposta();
           };
           reader.readAsDataURL(input.files[index]);
           index++;
