@@ -60,15 +60,28 @@
     <div class="">
       <!-- <h4>Fotos já adicionadas</h4> -->
       <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
-        <div v-for="(evidencia, index) in evidencias" :key="index" class="overlay">
+        <div
+          v-for="(evidencia, index) in evidencias"
+          :key="index"
+          class="overlay"
+        >
           <div class="overlay-wrapper">
-              <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" v-if="isImage(evidencia.url)" />
-              <video class="mw-200px me-1" controls v-else>
-                <source :src="evidencia.url" />
-              </video>
+            <img
+              :src="evidencia.url"
+              class="img-thumbnail mw-100px me-1"
+              v-if="isImage(evidencia.url)"
+            />
+            <video class="mw-200px me-1" controls v-else>
+              <source :src="evidencia.url" />
+            </video>
           </div>
           <div class="overlay-layer bg-dark bg-opacity-10">
-            <button @click="removeEvidencia(evidencia.id, index)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            <button
+              @click="removeEvidencia(evidencia.id, index)"
+              class="btn btn-sm btn-danger"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -101,13 +114,19 @@
         <div class="d-flex flex-nowrap overflow-auto align-items-start mb-3">
           <div v-for="(item, j) in previewList" :key="j" class="overlay">
             <div class="overlay-wrapper">
-              <img :src="item" class="img-thumbnail mw-100px me-1" v-if="item.indexOf('data:image') >= 0" />
+              <img
+                :src="item"
+                class="img-thumbnail mw-100px me-1"
+                v-if="item.indexOf('data:image') >= 0"
+              />
               <video class="mw-200px me-1" controls v-else>
                 <source :src="item" />
               </video>
             </div>
             <div class="overlay-layer bg-dark bg-opacity-10">
-              <button @click="removeImagem(j)"  class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+              <button @click="removeImagem(j)" class="btn btn-sm btn-danger">
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -137,7 +156,7 @@ export default defineComponent({
     const previewList = ref<any>([]);
 
     const atualizarResposta = () => {
-      console.log('resposta', resposta.value);
+      console.log("resposta", resposta.value);
       emitter.emit("atualizarResposta", resposta.value);
     };
 
@@ -157,20 +176,20 @@ export default defineComponent({
       } else {
         return false;
       }
-    }
+    };
 
     const removeImagem = (index) => {
       previewList.value.splice(index, 1);
       resposta.value.imagens.splice(index, 1);
       atualizarResposta();
-    }
+    };
 
     const removeEvidencia = (id, index) => {
       evidencias.value.splice(index, 1);
       ApiService.delete("/evidencia/excluir/" + id).then(({ data }) => {
-        console.log('data', data)
+        console.log("data", data);
       });
-    }
+    };
 
     const onFileAdd = (event) => {
       const input = event.target;
@@ -184,12 +203,22 @@ export default defineComponent({
             previewList.value.push(result);
             let imagem = "";
             if (result.indexOf("data:image") >= 0) {
-              imagem = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");
+              imagem = e.target.result.replace(
+                /^data:image\/[a-z]+;base64,/,
+                ""
+              );
             } else {
-              imagem = e.target.result.replace(/^data:video\/[a-z,0-9]+;base64,/, "");
+              imagem = e.target.result.replace(
+                /^data:video\/[a-z,0-9]+;base64,/,
+                ""
+              );
             }
             //resposta.value.imagens.push(imagem);
-            enviarImagem(imagem, resposta.value.itemId, resposta.value.categoria);
+            enviarImagem(
+              imagem,
+              resposta.value.itemId,
+              resposta.value.categoria
+            );
             //atualizarResposta();
           };
           reader.readAsDataURL(input.files[index]);
@@ -208,7 +237,7 @@ export default defineComponent({
       atualizarResposta,
       removeImagem,
       removeEvidencia,
-      isImage
+      isImage,
     };
   },
 });

@@ -9,16 +9,16 @@
         </span>
         <span class="text-muted mb-4 font-weight-bold font-size-sm">
           Cliente:
-          <span class="text-dark font-weight-bold">{{
-            cadastro.nome
-          }}</span>
+          <span class="text-dark font-weight-bold">{{ cadastro.nome }}</span>
         </span>
       </div>
       <div class="container-fluid mb-6">
         <div class="row">
           <div class="col-md-4">
-        <!--begin::Label-->
-            <label class="col-lg-4 col-form-label fw-bold fs-6">Foto principal</label>
+            <!--begin::Label-->
+            <label class="col-lg-4 col-form-label fw-bold fs-6"
+              >Foto principal</label
+            >
             <!--end::Label-->
 
             <!--begin::Col-->
@@ -32,7 +32,9 @@
                 <!--begin::Preview existing avatar-->
                 <div
                   class="image-input-wrapper w-100px h-100px"
-                  :style="`background-image: url('${cadastro.imagem ? cadastro.imagem : previewImage}')`"
+                  :style="`background-image: url('${
+                    cadastro.imagem ? cadastro.imagem : previewImage
+                  }')`"
                 ></div>
                 <!--end::Preview existing avatar-->
 
@@ -90,16 +92,24 @@
             </div>
           </div>
           <div class="col-md-8">
-            <label class="col-lg-4 col-form-label fw-bold fs-6">Parecer final</label>
+            <label class="col-lg-4 col-form-label fw-bold fs-6"
+              >Parecer final</label
+            >
             <div class="col-lg-8">
               <!--begin::Image input-->
-              <textarea class="w-100" rows="5" v-model="cadastro.parecerFinal"></textarea>
+              <textarea
+                class="w-100"
+                rows="5"
+                v-model="cadastro.parecerFinal"
+              ></textarea>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <button class="btn btn-success" @click="salvarParecerFinaleFoto">Salvar alterações</button>
+            <button class="btn btn-success" @click="salvarParecerFinaleFoto">
+              Salvar alterações
+            </button>
           </div>
         </div>
         <!--end::Col-->
@@ -107,87 +117,100 @@
       <div class="accordion" id="accordionEvidencias">
         <div class="accordion-item">
           <h2 class="accordion-header">
-              <button
-                class="accordion-button bg-white text-dark fs-1 text-center"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#documento"
-                aria-expanded="true"
-                aria-controls="documento"
-              >
-                Documentos
-              </button>
-            </h2>
-            <div
-              id="documento"
-              class="accordion-collapse collapse show"
-              aria-labelledby="documento"
-              data-bs-parent="#accordionEvidencias"
+            <button
+              class="accordion-button bg-white text-dark fs-1 text-center"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#documento"
+              aria-expanded="true"
+              aria-controls="documento"
             >
+              Documentos
+            </button>
+          </h2>
+          <div
+            id="documento"
+            class="accordion-collapse collapse show"
+            aria-labelledby="documento"
+            data-bs-parent="#accordionEvidencias"
+          >
             <div class="card-body mb-10">
-                <div class="">
-                  <h4>Documentos já adicionadas</h4>
+              <div class="">
+                <h4>Documentos já adicionadas</h4>
+                <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
                   <div
-                    class="d-flex flex-nowrap overflow-auto align-items-start mb-3"
+                    v-for="(documento, index) in documentos"
+                    :key="index"
+                    class="overlay"
                   >
-                    <template
-                      v-for="(documento, index) in documentos"
-                      :key="index"
-                    >
-                      {{ documento.nome }}
-                    </template>
-                  </div>
-                  <button
-                    class="btn btn-light-primary d-flex align-items-center"
-                    @click="() => {
-                        inputDocumento.click();
-                      }">
-                    <i class="fa fa-file fs-3"></i>
-                    <span>Adicionar documentos</span>
-                  </button>
-                  <input
-                    type="file"
-                    multiple="multiple"
-                    @change="onDocumentoAdd"
-                    class="form-control-file d-none"
-                    id="my-file"
-                    ref="inputDocumento"
-                  />
-                  <div class="border p-2 mt-3" v-if="previewDocsList.length">
-                    <h4>Documentos para adicionar:</h4>
-                    <div
-                      class="d-flex flex-nowrap overflow-auto align-items-start mb-3"
-                    >
-                      <ul>
-                      <li v-for="(item, j) in previewDocsList" :key="j">
-                        {{ item }}
-                      </li>
-                      </ul>
+                    <div class="overlay-wrapper">
+                      <a :href="documento.url" target="_blank" class="btn btn-sm btn-secondary me-1"
+                                    ><i class="fas fa-file-download fs-4 me-2"></i> <span class="fs-9">{{documento.nome}}</span></a>
+                    </div>
+                    <div class="overlay-layer bg-dark bg-opacity-10">
+                      <button
+                        @click="removeDocumento(documento.id, index)"
+                        class="btn btn-sm btn-danger"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div class="progress mt-3 mb-3">
-                  <div
-                    class="progress-bar progress-bar-striped"
-                    role="progressbar"
-                    style="width: 0%"
-                    aria-valuenow="100"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    :ref="progressBarDocumento"
-                  ></div>
-                </div>
                 <button
-                  @click="enviarDocumentos"
-                  class="
-                    btn btn-success
-                    mt-5
+                  class="btn btn-light-primary d-flex align-items-center"
+                  @click="
+                    () => {
+                      inputDocumento.click();
+                    }
                   "
                 >
-                  <span>Enviar documentos</span>
+                  <i class="fa fa-file fs-3"></i>
+                  <span>Adicionar documentos</span>
                 </button>
+                <input
+                  type="file"
+                  multiple="multiple"
+                  @change="onDocumentoAdd"
+                  class="form-control-file d-none"
+                  id="my-file"
+                  ref="inputDocumento"
+                />
+                <div class="border p-2 mt-3" v-if="previewDocsList.length">
+                  <h4>Documentos para adicionar:</h4>
+                  <div
+                    class="
+                      d-flex
+                      flex-nowrap
+                      overflow-auto
+                      align-items-start
+                      mb-3
+                    "
+                  >
+                    <ul>
+                      <li v-for="(item, j) in previewDocsList" :key="j">
+                        {{ item }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
+              <div class="progress mt-3 mb-3">
+                <div
+                  class="progress-bar progress-bar-striped"
+                  role="progressbar"
+                  style="width: 0%"
+                  aria-valuenow="100"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  ref="progressBarDocumento"
+                ></div>
+              </div>
+              <button @click="enviarDocumentos" class="btn btn-success mt-5">
+                <span>Enviar documentos</span>
+              </button>
             </div>
+          </div>
         </div>
         <template v-for="(categoria, i) in model.perguntas" :key="i">
           <div class="accordion-item">
@@ -214,7 +237,13 @@
                 <div class="">
                   <h4>Fotos já adicionadas</h4>
                   <div
-                    class="d-flex flex-nowrap overflow-auto align-items-start mb-3"
+                    class="
+                      d-flex
+                      flex-nowrap
+                      overflow-auto
+                      align-items-start
+                      mb-3
+                    "
                   >
                     <template
                       v-for="(evidencia, index) in categoriaFilter(
@@ -246,7 +275,7 @@
                     class="form-control-file d-none"
                     id="my-file"
                     :ref="
-                      el => {
+                      (el) => {
                         inputs[i] = el;
                       }
                     "
@@ -254,7 +283,13 @@
                   <div class="border p-2 mt-3" v-if="previewList.length">
                     <h4>Imagens para adicionar:</h4>
                     <div
-                      class="d-flex flex-nowrap overflow-auto align-items-start mb-3"
+                      class="
+                        d-flex
+                        flex-nowrap
+                        overflow-auto
+                        align-items-start
+                        mb-3
+                      "
                     >
                       <template v-for="(item, j) in previewList" :key="j">
                         <img :src="item" class="img-thumbnail mw-100px" />
@@ -271,7 +306,7 @@
                     aria-valuemin="0"
                     aria-valuemax="100"
                     :ref="
-                      el => {
+                      (el) => {
                         progressBars[i] = el;
                       }
                     "
@@ -279,10 +314,7 @@
                 </div>
                 <button
                   @click="enviar(categoria.value, i)"
-                  class="
-                    btn btn-success
-                    mt-5
-                  "
+                  class="btn btn-success mt-5"
                 >
                   <span>Enviar respostas {{ categoria.text }}</span>
                 </button>
@@ -307,7 +339,7 @@ import {
   reactive,
   onMounted,
   onBeforeUpdate,
-  computed
+  computed,
 } from "vue";
 import { saveToken } from "@/core/services/JwtService";
 import ApiService from "@/core/services/ApiService";
@@ -328,11 +360,11 @@ export default defineComponent({
         { text: "Estrutura", value: "Estrutura" },
         { text: "Conservação Externa", value: "ConservacaoExterna" },
         { text: "Conservação Interna", value: "ConservacaoInterna" },
-        { text: "Funcionamento", value: "Funcionamento" }
+        { text: "Funcionamento", value: "Funcionamento" },
       ],
       analiseId: computed(() => {
         return route.currentRoute.value.params.analiseId;
-      })
+      }),
     });
 
     const cadastro = ref<any>({});
@@ -343,7 +375,7 @@ export default defineComponent({
     const previewDocsList = ref<any>([]);
     const previewImage = ref("media/avatars/carros.jpg");
     const progressBars = ref<any>([]);
-    const progressBarDocumento = ref<any>();
+    const progressBarDocumento = ref<HTMLElement>();
     const inputs = ref<any>([]);
     const inputDocumento = ref<any>();
     const imagem = ref<any>();
@@ -354,7 +386,7 @@ export default defineComponent({
       progressBars.value = [];
     });
 
-    const onFotoPrincipalAdd = event => {
+    const onFotoPrincipalAdd = (event) => {
       cadastro.value.imagem = null;
       const input = event.target;
       let count = input.files.length;
@@ -371,7 +403,7 @@ export default defineComponent({
       }
     };
 
-    const onFileAdd = event => {
+    const onFileAdd = (event) => {
       const input = event.target;
       let count = input.files.length;
       let index = 0;
@@ -387,7 +419,7 @@ export default defineComponent({
       }
     };
 
-    const onDocumentoAdd = event => {
+    const onDocumentoAdd = (event) => {
       const input = event.target;
       let count = input.files.length;
       let index = 0;
@@ -403,7 +435,7 @@ export default defineComponent({
       }
     };
 
-    const onUpload = status => {
+    const onUpload = (status) => {
       const percent = (status.loaded / status.total) * 100;
       const progress = Math.round(percent);
       progressBar.setAttribute("style", "width: " + progress.toString() + "%");
@@ -414,10 +446,27 @@ export default defineComponent({
           buttonsStyling: false,
           confirmButtonText: "Ok ",
           customClass: {
-            confirmButton: "btn fw-bold btn-light-success"
-          }
+            confirmButton: "btn fw-bold btn-light-success",
+          },
         });
       }
+    };
+
+    const onUploadDocumento = (status) => {
+      const percent = (status.loaded / status.total) * 100;
+      const progress = Math.round(percent);
+      progressBarDocumento.value?.setAttribute("style", "width: " + progress.toString() + "%");
+      // if (progress === 100) {
+      //   Swal.fire({
+      //     text: "Documentos enviadas com sucesso",
+      //     icon: "success",
+      //     buttonsStyling: false,
+      //     confirmButtonText: "Ok ",
+      //     customClass: {
+      //       confirmButton: "btn fw-bold btn-light-success",
+      //     },
+      //   });
+      // }
     };
 
     const removeImage = () => {
@@ -433,8 +482,8 @@ export default defineComponent({
 
       ApiService.post("analise/parecer-final", formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
+          "Content-Type": "multipart/form-data",
+        },
       }).then(() => {
         Swal.fire({
           text: "Informações salvas com sucesso",
@@ -443,16 +492,16 @@ export default defineComponent({
           confirmButtonText: "Ok",
           customClass: {
             confirmButton: "btn fw-bold btn-light-primary",
-          }
+          },
         });
-      })
-    }
+      });
+    };
 
     const enviar = (categoria: string, index) => {
       progressBar = progressBars.value[index];
       const formData = new FormData();
 
-      Array.prototype.forEach.call(inputs.value[index].files, file => {
+      Array.prototype.forEach.call(inputs.value[index].files, (file) => {
         formData.append("imagens", file);
       });
 
@@ -462,47 +511,101 @@ export default defineComponent({
       ApiService.post("analise/upload", formData, {
         onUploadProgress: onUpload,
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }).then(resp => {
-        console.log(resp);
-      });
+          "Content-Type": "multipart/form-data",
+        },
+      }).then(() => {
+          Swal.fire({
+            text: `Evidências adicionadas com sucesso!`,
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, proximo!",
+            customClass: {
+              confirmButton: "btn fw-bold btn-light-primary"
+            }
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            text: "Não foi possível registrar as informações",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok :(",
+            customClass: {
+              confirmButton: "btn fw-bold btn-light-danger"
+            }
+          });
+        });
     };
 
     const enviarDocumentos = () => {
       const formData = new FormData();
 
-      Array.prototype.forEach.call(inputDocumento.value.files, file => {
+      Array.prototype.forEach.call(inputDocumento.value.files, (file) => {
         formData.append("documentos", file);
       });
 
       formData.append("analiseId", model.analiseId.toString());
 
       ApiService.post("documento/cadastrar", formData, {
-        onUploadProgress: onUpload,
+        onUploadProgress: onUploadDocumento,
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }).then(resp => {
-        console.log(resp);
+          "Content-Type": "multipart/form-data",
+        },
+      }).then(() => {
+          Swal.fire({
+            text: `Documentos adicionados com sucesso!`,
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, proximo!",
+            customClass: {
+              confirmButton: "btn fw-bold btn-light-primary"
+            }
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            text: "Não foi possível registrar as informações",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok :(",
+            customClass: {
+              confirmButton: "btn fw-bold btn-light-danger"
+            }
+          });
+        });
+    };
+
+    const categoriaFilter = (categoria) => {
+      return imageList.filter((x) => {
+        return x.categoria === categoria;
       });
     };
 
-    const categoriaFilter = categoria => {
-      return imageList.filter(x => { return x.categoria === categoria })
+    const removeImagem = (index) => {
+      previewDocsList.value.splice(index, 1);
+    };
+
+    const removeDocumento = (id, index) => {
+      documentos.value.splice(index, 1);
+      ApiService.delete("/documento/excluir/" + id).then(({ data }) => {
+        console.log("data", data);
+      });
     };
 
     onMounted(() => {
       ApiService.get(`analise?id=${model.analiseId}`).then(({ data }) => {
         cadastro.value = data;
       });
-      ApiService.get(`analise/evidencias?id=${model.analiseId}`).then(({ data }) => {
-        imageList = data;
-      });
-      ApiService.get(`analise/documentos?id=${model.analiseId}`).then(({ data }) => {
-        documentos.value = data;
-      });
-      
+      ApiService.get(`analise/evidencias?id=${model.analiseId}`).then(
+        ({ data }) => {
+          imageList = data;
+        }
+      );
+      ApiService.get(`analise/documentos?id=${model.analiseId}`).then(
+        ({ data }) => {
+          documentos.value = data;
+        }
+      );
     });
 
     return {
@@ -524,8 +627,9 @@ export default defineComponent({
       categoriaFilter,
       progressBars,
       progressBarDocumento,
-      salvarParecerFinaleFoto
+      salvarParecerFinaleFoto,
+      removeDocumento
     };
-  }
+  },
 });
 </script>
