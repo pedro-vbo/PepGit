@@ -23,7 +23,7 @@
                             class="col-6 d-flex flex-column align-items-center py-5"
                           >
                             <h3>Parecer final</h3>
-                            <span class="d-flex align-items-center text-info">
+                            <span class="d-flex align-items-center text-center text-dark">
                               <!-- <i
                                 class="fa fa-check-circle text-success me-3"
                                 style="font-size: 50px"
@@ -31,6 +31,12 @@
                               Aprovado -->
                               {{ model.laudo.parecerFinal }}
                             </span>
+                            <div class="d-flex align-items-center mt-3" v-if="model.laudo.documentos.length > 0">
+                                <div v-for="(doc, index) in model.laudo.documentos" :key="index">
+                                  <a :href="doc.url" target="_blank" class="btn btn-sm btn-secondary "
+                                    ><i class="fas fa-file-download fs-4 me-2"></i> <span class="fs-9">{{doc.nome}}</span></a>
+                                </div>
+                            </div>
                             <span class="mt-5"
                               ><span class="fs-8 text-muted"
                                 >Data do laudo </span
@@ -474,7 +480,8 @@ export default defineComponent({
         chassi: null,
         placa: null,
         items: [],
-        evidencias: []
+        evidencias: [],
+        documentos: []
       }
     });
 

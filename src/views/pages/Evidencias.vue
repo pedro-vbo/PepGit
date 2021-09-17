@@ -105,6 +105,90 @@
         <!--end::Col-->
       </div>
       <div class="accordion" id="accordionEvidencias">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+              <button
+                class="accordion-button bg-white text-dark fs-1 text-center"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#documento"
+                aria-expanded="true"
+                aria-controls="documento"
+              >
+                Documentos
+              </button>
+            </h2>
+            <div
+              id="documento"
+              class="accordion-collapse collapse show"
+              aria-labelledby="documento"
+              data-bs-parent="#accordionEvidencias"
+            >
+            <div class="card-body mb-10">
+                <div class="">
+                  <h4>Documentos já adicionadas</h4>
+                  <div
+                    class="d-flex flex-nowrap overflow-auto align-items-start mb-3"
+                  >
+                    <template
+                      v-for="(documento, index) in documentos"
+                      :key="index"
+                    >
+                      {{ documento.nome }}
+                    </template>
+                  </div>
+                  <button
+                    class="btn btn-light-primary d-flex align-items-center"
+                    @click="() => {
+                        inputDocumento.click();
+                      }">
+                    <i class="fa fa-file fs-3"></i>
+                    <span>Adicionar documentos</span>
+                  </button>
+                  <input
+                    type="file"
+                    multiple="multiple"
+                    @change="onDocumentoAdd"
+                    class="form-control-file d-none"
+                    id="my-file"
+                    ref="inputDocumento"
+                  />
+                  <div class="border p-2 mt-3" v-if="previewDocsList.length">
+                    <h4>Documentos para adicionar:</h4>
+                    <div
+                      class="d-flex flex-nowrap overflow-auto align-items-start mb-3"
+                    >
+                      <ul>
+                      <li v-for="(item, j) in previewDocsList" :key="j">
+                        {{ item }}
+                      </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress mt-3 mb-3">
+                  <div
+                    class="progress-bar progress-bar-striped"
+                    role="progressbar"
+                    style="width: 0%"
+                    aria-valuenow="100"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    :ref="progressBarDocumento"
+                  ></div>
+                </div>
+                <button
+                  @click="enviarDocumentos"
+                  class="
+                    btn btn-success
+                    mt-5
+                  "
+                >
+                  <span>Enviar documentos</span>
+                </button>
+              </div>
+            </div>
+        </div>
         <template v-for="(categoria, i) in model.perguntas" :key="i">
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingOne">
@@ -252,12 +336,16 @@ export default defineComponent({
     });
 
     const cadastro = ref<any>({});
+    const documentos = ref<any>([]);
 
     let imageList: Array<Evidencia> = [];
     const previewList = ref<any>([]);
+    const previewDocsList = ref<any>([]);
     const previewImage = ref("media/avatars/carros.jpg");
     const progressBars = ref<any>([]);
+    const progressBarDocumento = ref<any>();
     const inputs = ref<any>([]);
+    const inputDocumento = ref<any>();
     const imagem = ref<any>();
     let progressBar;
 
@@ -295,6 +383,22 @@ export default defineComponent({
           };
           reader.readAsDataURL(input.files[index]);
           index++;
+        }
+      }
+    };
+
+    const onDocumentoAdd = event => {
+      const input = event.target;
+      let count = input.files.length;
+      let index = 0;
+      if (input.files) {
+        while (count--) {
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            previewDocsList.value.push(input.files[index].name);
+            index++;
+          };
+          reader.readAsDataURL(input.files[index]);
         }
       }
     };
@@ -365,6 +469,25 @@ export default defineComponent({
       });
     };
 
+    const enviarDocumentos = () => {
+      const formData = new FormData();
+
+      Array.prototype.forEach.call(inputDocumento.value.files, file => {
+        formData.append("documentos", file);
+      });
+
+      formData.append("analiseId", model.analiseId.toString());
+
+      ApiService.post("documento/cadastrar", formData, {
+        onUploadProgress: onUpload,
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(resp => {
+        console.log(resp);
+      });
+    };
+
     const categoriaFilter = categoria => {
       return imageList.filter(x => { return x.categoria === categoria })
     };
@@ -376,21 +499,31 @@ export default defineComponent({
       ApiService.get(`analise/evidencias?id=${model.analiseId}`).then(({ data }) => {
         imageList = data;
       });
+      ApiService.get(`analise/documentos?id=${model.analiseId}`).then(({ data }) => {
+        documentos.value = data;
+      });
+      
     });
 
     return {
       model,
       cadastro,
+      documentos,
       imagem,
       previewImage,
       previewList,
+      previewDocsList,
       onFotoPrincipalAdd,
       removeImage,
       onFileAdd,
+      onDocumentoAdd,
       enviar,
+      enviarDocumentos,
       inputs,
+      inputDocumento,
       categoriaFilter,
       progressBars,
+      progressBarDocumento,
       salvarParecerFinaleFoto
     };
   }
