@@ -290,7 +290,7 @@
                                     .categorias"
                                   :key="index"
                                 >
-                                  <label>{{ categoria.categoria }}</label>
+                                  <label>{{ getTextoCorreto(categoria.categoria) }}</label>
                                   <label
                                     ><span v-if="getItemsOk(categoria.items) !== categoria.items.length" class="badge badge-circle badge-white me-1"><i class="fa fa-exclamation-triangle  text-warning"></i></span>{{ getItemsOk(categoria.items) }}/{{
                                       categoria.items.length
@@ -316,7 +316,7 @@
                                     .categorias"
                                   :key="index"
                                 >
-                                  <label>{{ categoria.categoria }}</label>
+                                  <label>{{ getTextoCorreto(categoria.categoria) }}</label>
                                   <label
                                     >{{ getItemsOk(categoria.items) }}/{{
                                       categoria.items.length
@@ -352,7 +352,7 @@
                             >
                               <div class="card-title text-center">
                                 <h3 class="text-warning pt-3">
-                                  {{ categoria.categoria }}
+                                  {{ getTextoCorreto(categoria.categoria) }}
                                 </h3>
                               </div>
                               <div class="px-3 d-flex flex-column">
@@ -381,7 +381,7 @@
                       <div class="col-lg-8">
                         <div class="card border mb-3">
                           <div className="card-body d-flex flex-column">
-                            <h3>{{ categoria.categoria }}</h3>
+                            <h3>{{ getTextoCorreto(categoria.categoria) }}</h3>
                             <div
                               class="row"
                               :class="{'bg-light': indexItem % 2 != 0}"
@@ -537,10 +537,33 @@ export default defineComponent({
       }).map(x => { return x });
     };
 
+    const getTextoCorreto = categoria => {
+      let palavra = categoria;
+      switch (categoria) {
+        case "ConservacaoInterna":
+          palavra = "Conservação Interna";
+          break;
+        case "ConservacaoExterna":
+          palavra = "Conservação Externa";
+          break;
+        case "Identificacao":
+          palavra = "Identificação";
+          break;
+        case "Perifericos":
+          palavra = "Periféricos";
+          break;
+        default:
+          break;
+      }
+      return palavra;
+    }
+
     ApiService.get(`laudo/${laudoId}`).then(({ data }) => {
       model.laudo = data;
       console.log(data.items);
     });
+
+
     return {
       model,
       isImage,
@@ -549,7 +572,8 @@ export default defineComponent({
       getItemsComProblema,
       getImagensCategoria,
       goToMensagemProblema,
-      removeWhiteSpace
+      removeWhiteSpace,
+      getTextoCorreto
     };
   }
 });
