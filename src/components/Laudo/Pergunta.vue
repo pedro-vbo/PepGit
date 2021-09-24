@@ -227,7 +227,7 @@ export default defineComponent({
               const img = new Image();
               img.src = e.target.result;
               img.onload = function () {
-                const data = compress(img, 0.7);
+                const data = compress(img, 0.5);
                 const imagem = data.replace(/^data:image\/[a-z]+;base64,/, "");
                 resposta.value.imagens.push(imagem);
                 enviarImagem(
