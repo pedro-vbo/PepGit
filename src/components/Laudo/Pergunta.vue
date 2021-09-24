@@ -191,6 +191,28 @@ export default defineComponent({
       });
     };
 
+    const compress = (img, size) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const initSize = img.src.length;
+      const width = img.width;
+      const height = img.height;
+      canvas.width = width;
+      canvas.height = height;
+      //Base color
+      if (ctx !== null) {
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, width, height);
+      }
+      //Minimum compression
+      const ndata = canvas.toDataURL("image/jpeg", size);
+      console.log("* * * * * * * * * *");
+      // console.log(ndata)
+      console.log(ndata.length / 1024);
+      return ndata;
+    };
+
     const onFileAdd = (event) => {
       const input = event.target;
       let count = input.files.length;
@@ -201,25 +223,33 @@ export default defineComponent({
           reader.onload = (e: any) => {
             const result = e.target.result;
             previewList.value.push(result);
-            let imagem = "";
             if (result.indexOf("data:image") >= 0) {
-              imagem = e.target.result.replace(
-                /^data:image\/[a-z]+;base64,/,
-                ""
-              );
+              const img = new Image();
+              img.src = e.target.result;
+              img.onload = function () {
+                const data = compress(img, 0.7);
+                const imagem = data.replace(/^data:image\/[a-z]+;base64,/, "");
+                resposta.value.imagens.push(imagem);
+                enviarImagem(
+                  imagem,
+                  resposta.value.itemId,
+                  resposta.value.categoria
+                );
+                atualizarResposta();
+              };
             } else {
-              imagem = e.target.result.replace(
+              const imagem = e.target.result.replace(
                 /^data:video\/[a-z,0-9]+;base64,/,
                 ""
               );
+              resposta.value.imagens.push(imagem);
+              enviarImagem(
+                imagem,
+                resposta.value.itemId,
+                resposta.value.categoria
+              );
+              atualizarResposta();
             }
-            //resposta.value.imagens.push(imagem);
-            enviarImagem(
-              imagem,
-              resposta.value.itemId,
-              resposta.value.categoria
-            );
-            //atualizarResposta();
           };
           reader.readAsDataURL(input.files[index]);
           index++;
