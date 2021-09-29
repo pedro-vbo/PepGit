@@ -117,7 +117,7 @@
               <img
                 :src="item"
                 class="img-thumbnail mw-100px me-1"
-                v-if="item.indexOf('data:image') >= 0"
+                v-if="item.indexOf('jpg') >= 0 || item.indexOf('jpeg') >= 0 || item.indexOf('png') >= 0"
               />
               <video class="mw-200px me-1" controls v-else>
                 <source :src="item" />
@@ -147,10 +147,12 @@ export default defineComponent({
   props: {
     pergunta: Object,
     imagens: Array,
+    analiseId: String
   },
   setup(context) {
     const resposta = ref<any>(context.pergunta);
     const evidencias = ref<any>(context.imagens);
+    const analiseId = ref<any>(context.analiseId);
     resposta.value.imagens = [];
     const input = ref<HTMLInputElement>();
     const previewList = ref<any>([]);
@@ -219,43 +221,71 @@ export default defineComponent({
       let index = 0;
       if (input.files) {
         while (count--) {
-          const reader = new FileReader();
-          reader.onload = (e: any) => {
-            const result = e.target.result;
-            previewList.value.push(result);
-            if (result.indexOf("data:image") >= 0) {
-              const img = new Image();
-              img.src = e.target.result;
-              img.onload = function () {
-                const data = compress(img, 0.5);
-                const imagem = data.replace(/^data:image\/[a-z]+;base64,/, "");
-                resposta.value.imagens.push(imagem);
-                enviarImagem(
-                  imagem,
-                  resposta.value.itemId,
-                  resposta.value.categoria
-                );
-                atualizarResposta();
-              };
-            } else {
-              const imagem = e.target.result.replace(
-                /^data:video\/[a-z,0-9]+;base64,/,
-                ""
-              );
-              resposta.value.imagens.push(imagem);
-              enviarImagem(
-                imagem,
-                resposta.value.itemId,
-                resposta.value.categoria
-              );
-              atualizarResposta();
-            }
-          };
-          reader.readAsDataURL(input.files[index]);
+          const formData = new FormData();
+
+          formData.append("evidencia", input.files[index]);
+          formData.append("analiseId", analiseId.value);
+          formData.append("itemId", resposta.value.itemId);
+          formData.append("categoria", resposta.value.categoria);
+
+          ApiService.post("/evidencia/cadastrar2", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }).then(({ data }) => {
+            evidencias.value.push({
+              url: data.item2,
+              id: data.item1
+            });
+          });
           index++;
         }
       }
     };
+
+    // const onFileAdd2 = (event) => {
+    //   const input = event.target;
+    //   let count = input.files.length;
+    //   let index = 0;
+    //   if (input.files) {
+    //     while (count--) {
+    //       const reader = new FileReader();
+    //       reader.onload = (e: any) => {
+    //         const result = e.target.result;
+    //         previewList.value.push(result);
+    //         if (result.indexOf("data:image") >= 0) {
+    //           const img = new Image();
+    //           img.src = e.target.result;
+    //           img.onload = function () {
+    //             const data = compress(img, 0.5);
+    //             const imagem = data.replace(/^data:image\/[a-z]+;base64,/, "");
+    //             resposta.value.imagens.push(imagem);
+    //             enviarImagem(
+    //               imagem,
+    //               resposta.value.itemId,
+    //               resposta.value.categoria
+    //             );
+    //             atualizarResposta();
+    //           };
+    //         } else {
+    //           const imagem = e.target.result.replace(
+    //             /^data:video\/[a-z,0-9]+;base64,/,
+    //             ""
+    //           );
+    //           resposta.value.imagens.push(imagem);
+    //           enviarImagem(
+    //             imagem,
+    //             resposta.value.itemId,
+    //             resposta.value.categoria
+    //           );
+    //           atualizarResposta();
+    //         }
+    //       };
+    //       reader.readAsDataURL(input.files[index]);
+    //       index++;
+    //     }
+    //   }
+    // };
 
     return {
       Field,
