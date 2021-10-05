@@ -88,149 +88,36 @@
               <label for="formDtnascimento">Data de Nascimento</label>
               <div class="invalid-feedback">{{ errors.formDtnascimento }}</div>
             </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.marca"
-                as="select"
-                :class="{ 'is-invalid': errors.formMarca }"
-                class="form-select"
-                name="formMarca"
-                aria-label="Floating label select example"
-                placeholder="Marca"
+            <div v-if="cadastro.veiculos && cadastro.veiculos.length > 0">
+              <hr class="mt-2 mb-2" />
+              <h3>Veículos</h3>
+              <template v-for="veiculo in cadastro.veiculos" :key="veiculo.id"> 
+                <span
+                  className="d-flex align-items-center justify-content-between text-muted mb-3"
+                >
+                  <span className="font-size-sm">
+                    {{ veiculo.marca }} {{ veiculo.modelo }} | Placa
+                    {{ veiculo.placa }}
+                  </span>
+                  <a
+                    href="#pryal_veiculo_cadastro"
+                    @click="setVeiculo(veiculo)"
+                    data-bs-toggle="modal"
+                    ><span>Editar</span></a
+                  >
+                </span>
+              </template>
+            </div>
+            <div class="d-flex align-items-center justify-content-center">
+              <button
+                type="button"
+                v-if="cadastro.id != null"
+                class="btn btn-sm btn-info"
+                data-bs-toggle="modal"
+                data-bs-target="#pryal_veiculo_cadastro"
               >
-                <option selected></option>
-                <option value="AstonMartin">Aston Martin</option>
-                <option value="Audi">Audi</option>
-                <option value="Bentley">Bentley</option>
-                <option value="BMW">BMW</option>
-                <option value="CaoaChery">Caoa Chery</option>
-                <option value="Chevrolet">Chevrolet</option>
-                <option value="Chrysler">Chrysler</option>
-                <option value="Citroen">Citroen</option>
-                <option value="Dodge">Dodge</option>
-                <option value="Ferrari">Ferrari</option>
-                <option value="Fiat">Fiat</option>
-                <option value="Ford">Ford</option>
-                <option value="Honda">Honda</option>
-                <option value="Husqvarna">Husqvarna</option>
-                <option value="Hyundai">Hyundai</option>
-                <option value="JAC">JAC</option>
-                <option value="Jaguar">Jaguar</option>
-                <option value="Jeep">Jeep</option>
-                <option value="Kia">Kia</option>
-                <option value="Lamborguini">Lamborguini</option>
-                <option value="LandRover">Land Rover</option>
-                <option value="Lexus">Lexus</option>
-                <option value="Lifan">Lifan</option>
-                <option value="Maserati">Maserati</option>
-                <option value="McLaren">McLaren</option>
-                <option value="Mercedes">Mercedes</option>
-                <option value="Mini">Mini</option>
-                <option value="Mistubishi">Mistubishi</option>
-                <option value="Nissan">Nissan</option>
-                <option value="Peugeot">Peugeot</option>
-                <option value="Porsche">Porsche</option>
-                <option value="Renault">Renault</option>
-                <option value="RollsRoyce">Rolls Royce</option>
-                <option value="RoyalEnfield">Royal Enfield</option>
-                <option value="Smart">Smart</option>
-                <option value="Subaru">Subaru</option>
-                <option value="Susuki">Susuki</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Triumph">Triumph</option>
-                <option value="Troller">Troller</option>
-                <option value="Volkswagen">Volkswagen</option>
-                <option value="Volvo">Volvo</option>
-                <option value="Yamaha">Yamaha</option>
-              </Field>
-              <label for="formMarca">Marca</label>
-              <div class="invalid-feedback">{{ errors.formMarca }}</div>
-            </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.modelo"
-                type="text"
-                :class="{ 'is-invalid': errors.formModelo }"
-                class="form-control"
-                name="formModelo"
-                placeholder="Modelo"
-              />
-              <label for="formModelo">Modelo</label>
-              <div class="invalid-feedback">{{ errors.formModelo }}</div>
-            </div>
-            <div class="input-group mb-3">
-              <Field
-                v-model="cadastro.quilometragem"
-                type="number"
-                :class="{ 'is-invalid': errors.formQuilimetragem }"
-                class="form-control"
-                placeholder="Quilometragem"
-                aria-label="Quilometragem"
-                name="formQuilimetragem"
-              />
-              <span class="input-group-text">KM</span>
-              <div class="invalid-feedback">{{ errors.formQuilimetragem }}</div>
-            </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.anoFabricacao"
-                type="text"
-                :class="{ 'is-invalid': errors.formAnofabricacao }"
-                class="form-control"
-                name="formAnofabricacao"
-                placeholder="Ano Fabricação"
-              />
-              <label for="formAnofabricacao">Ano Fabricação</label>
-              <div class="invalid-feedback">{{ errors.formAnofabricacao }}</div>
-            </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.anoModelo"
-                type="text"
-                :class="{ 'is-invalid': errors.formAnomodelo }"
-                class="form-control"
-                name="formAnomodelo"
-                placeholder="Ano Modelo"
-              />
-              <label for="formAnomodelo">Ano Modelo</label>
-              <div class="invalid-feedback">{{ errors.formAnomodelo }}</div>
-            </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.placa"
-                type="text"
-                :class="{ 'is-invalid': errors.formPlaca }"
-                class="form-control text-uppercase"
-                name="formPlaca"
-                placeholder="Placa"
-                v-mask="'AAA-#X##'"
-              />
-              <label for="formPlaca">Placa</label>
-              <div class="invalid-feedback">{{ errors.formPlaca }}</div>
-            </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.renavam"
-                type="number"
-                :class="{ 'is-invalid': errors.formRenavam }"
-                class="form-control"
-                name="formRenavam"
-                placeholder="Renavam"
-              />
-              <label for="formRenavam">Renavam</label>
-              <div class="invalid-feedback">{{ errors.formRenavam }}</div>
-            </div>
-            <div class="form-floating mb-3">
-              <Field
-                v-model="cadastro.chassi"
-                type="text"
-                :class="{ 'is-invalid': errors.formChassi }"
-                class="form-control text-uppercase"
-                name="formChassi"
-                placeholder="Chassi"
-              />
-              <label for="formChassi">Chassi</label>
-              <div class="invalid-feedback">{{ errors.formChassi }}</div>
+                Cadastrar veículo
+              </button>
             </div>
           </Form>
         </div>
@@ -253,11 +140,12 @@
       </div>
     </div>
   </div>
+  <VeiculoCadastro :veiculo="veiculo" :clienteId="cadastro.id" />
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, reactive, watch } from "vue";
-import { saveToken } from "@/core/services/JwtService";
+import VeiculoCadastro from "@/views/pages/widgets/VeiculoCadastro.vue";
 import ApiService from "@/core/services/ApiService";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Field, Form } from "vee-validate";
@@ -267,7 +155,7 @@ import { pt } from "yup-locale-pt";
 
 export default defineComponent({
   name: "ClienteCadastro",
-  components: { Field, Form },
+  components: { Field, Form, VeiculoCadastro },
   props: {
     cliente: Object,
   },
@@ -277,16 +165,7 @@ export default defineComponent({
       id: null,
       cpf: null,
       email: null,
-      dataDeNascimento: null,
-      veiculoId: null,
-      marca: null,
-      modelo: null,
-      quilometragem: null,
-      anoFabricacao: null,
-      anoModelo: null,
-      renavam: null,
-      placa: null,
-      chassi: null
+      dataDeNascimento: null
     }
     const cadastro = ref<any>(JSON.parse(JSON.stringify(valoresIniciais)));
     const clienteProp = reactive<any>(props);
@@ -294,6 +173,7 @@ export default defineComponent({
     const closeModal = ref<HTMLButtonElement | null>(null);
     const isCadastroNovo = ref(true);
     const form = ref<HTMLFormElement>();
+    const veiculo = ref<unknown>({});
     const route = useRouter();
 
     Yup.setLocale(pt);
@@ -307,15 +187,7 @@ export default defineComponent({
         .label("Data de nascimento")
         .default(function () {
           return new Date();
-        }),
-      formMarca: Yup.string().nullable().required().label("Marca"),
-      formModelo: Yup.string().required().label("Modelo"),
-      formQuilimetragem: Yup.number().nullable().required().label("Quilometragem"),
-      formAnofabricacao: Yup.number().nullable().required().label("Ano fabricação"),
-      formAnomodelo: Yup.number().nullable().required().label("Ano modelo"),
-      formPlaca: Yup.string().nullable().required().label("Placa"),
-      formRenavam: Yup.string().nullable().required().label("Renavam"),
-      formChassi: Yup.string().nullable().required().label("Chassi"),
+        })
     });
 
     onMounted(() => {
@@ -329,18 +201,17 @@ export default defineComponent({
     watch(clienteProp, () => {
       isCadastroNovo.value = false;
       const cliente = clienteProp.cliente;
-      const { id: veiculoId, ...other } = cliente.veiculos[0];
-      const merged = { ...cadastro.value, ...cliente, ...other };
+      const merged = { ...cadastro.value, ...cliente };
       cadastro.value = merged;
       cadastro.value["dataDeNascimento"] = cliente.dataDeNascimento.substring(
         0,
         10
       );
-      cadastro.value["veiculoId"] = veiculoId;
     });
 
     const cadastrar = () => {
-      ApiService.post("clientes/cadastrar", cadastro.value).then(() => {
+      ApiService.post("clientes/cadastrar", cadastro.value).then(({data}) => {
+        cadastro.value.id = data;
         Swal.fire({
           text: "Cliente foi registrado com sucesso!",
           icon: "success",
@@ -349,8 +220,6 @@ export default defineComponent({
           customClass: {
             confirmButton: "btn fw-bold btn-light-primary",
           },
-        }).then(() => {
-          closeModal.value?.click();
         });
       })
        .catch(({ response }) => {
@@ -400,23 +269,9 @@ export default defineComponent({
       });
     };
 
-    //   Swal.fire({
-    //     text: "Deseja realmente excluir esse cliente?",
-    //     icon: "warning",
-    //     buttonsStyling: false,
-    //     confirmButtonText: "Sim, excluir!",
-    //     customClass: {
-    //       confirmButton: "btn fw-bold btn-light-primary"
-    //     }
-    //   }).then(() => {
-    //     console.log('excluiu')
-    //     // ApiService.delete("/clientes/excluir/" + clienteProp.cliente.id).then(
-    //     //   ({ data }) => {
-    //     //     closeModal.value?.click();
-    //     //   }
-    //     // );
-    //   });
-    // };
+    function setVeiculo(v) {
+      veiculo.value = v;
+    }
 
     return {
       cadastrar,
@@ -430,7 +285,9 @@ export default defineComponent({
       Form,
       Field,
       excluir,
+      veiculo,
+      setVeiculo
     };
-  },
+  }
 });
 </script>

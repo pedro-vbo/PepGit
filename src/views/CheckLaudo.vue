@@ -1,6 +1,12 @@
 <template>
   <div
-    class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed"
+    class="
+      d-flex
+      flex-column flex-column-fluid
+      bgi-position-y-bottom
+      position-x-center
+      bgi-no-repeat bgi-size-contain bgi-attachment-fixed
+    "
   >
     <!--begin::Content-->
     <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
@@ -22,9 +28,7 @@
           <!--begin::Heading-->
           <div class="text-center mb-10">
             <!--begin::Title-->
-            <h1 class="text-dark mb-3">
-              Pesquisa de laudo
-            </h1>
+            <h1 class="text-dark mb-3">Pesquisa de laudo</h1>
             <!--end::Title-->
           </div>
           <!--begin::Heading-->
@@ -59,7 +63,6 @@
                 >Placa</label
               >
               <!--end::Label-->
-
             </div>
             <!--end::Wrapper-->
 
@@ -79,7 +82,23 @@
             </div>
           </div>
           <!--end::Input group-->
-
+          <div class="fv-row mb-10">
+            <label class="form-check form-check-custom form-check-solid">
+              <Field
+                class="form-check-input"
+                type="checkbox"
+                name="toc"
+                value="1"
+                @change="setToc"
+              />
+              <span class="form-check-label fw-bold text-gray-700 fs-6">
+                Eu li e aceitos os &
+                <a href="#pryal_termos" data-bs-toggle="modal" class="ms-1 link-primary"
+                  >Termos e condições da Pryal</a
+                >.
+              </span>
+            </label>
+          </div>
           <!--begin::Actions-->
           <div class="text-center">
             <!--begin::Submit button-->
@@ -88,10 +107,9 @@
               ref="submitButton"
               id="kt_sign_in_submit"
               class="btn btn-lg btn-primary w-100 mb-5"
+              :disabled="toc === false"
             >
-              <span class="indicator-label">
-                Procurar
-              </span>
+              <span class="indicator-label"> Procurar </span>
 
               <span class="indicator-progress">
                 Procurando...
@@ -110,6 +128,37 @@
     </div>
     <!--end::Content-->
   </div>
+  <div class="modal fade" ref="modal" tabindex="-1" id="pryal_termos">
+    <div
+      class="
+        modal-dialog
+        modal-dialog-centered
+        modal-dialog-scrollable
+        modal-fullscreen-sm-down
+      "
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex flex-column align-items-start">
+            <span> Termos e condições da PRYAL </span>
+          </h5>
+          <!--begin::Close-->
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span class="svg-icon svg-icon-2x"></span>
+          </div>
+          <!--end::Close-->
+        </div>
+
+        <div class="modal-body">
+          <p>A PRYAL, em seus processos de vistoria, utiliza consultas em bases de dados fornecidas por empresas terceiras. A PRYAL não possui responsabilidade sobre o fornecimento de tais dados, vez que se trata de mera apresentação de informações sobre veículos automotores registrados em bases públicas e privadas, estas detentoras do conteúdo. A vistoria e a apresentação das informações são ferramentas de auxílio para proprietários, compradores e vendedores, úteis na decisão de realização ou não de eventual negócio jurídico, no entanto não se confundem com uma recomendação. A PRYAL não avaliza ou assegura a regularidade e a licitude de transações que ocorreram ou venham a ocorrer, já que a tomada de decisão fica inteiramente a cargo do cliente. A PRYAL não é responsável por informações incorretas, faltantes ou divergentes, já que as informações são válidas somente no ato da vistoria. Em razão de se preocupar com os clientes e buscar sempre a transparência, a PRYAL informa que as empresas terceiras, fornecedoras das informações constantes em bancos de dados públicos e privados, não detém acesso e meios para a obtenção de registros advindos do RENAJUD.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -120,14 +169,14 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import * as Yup from "yup";
-import { pt } from 'yup-locale-pt';
+import { pt } from "yup-locale-pt";
 
 export default defineComponent({
   name: "check-laudo",
   components: {
     Field,
     Form,
-    ErrorMessage
+    ErrorMessage,
   },
   setup() {
     Yup.setLocale(pt);
@@ -136,42 +185,45 @@ export default defineComponent({
     const router = useRouter();
 
     const submitButton = ref<HTMLElement | null>(null);
+    const toc = ref(false);
+    
 
     //Create form validation object
     const login = Yup.object().shape({
-      renavam: Yup
-        .number()
-        .required()
-        .label("Renavam"),
-      placa: Yup.string()
-        .min(7)
-        .required()
-        .label("Placa")
+      renavam: Yup.number().required().label("Renavam"),
+      placa: Yup.string().min(7).required().label("Placa")
     });
 
     //Form submit function
-    const onSubmitLogin = values => {
+    const onSubmitLogin = (values) => {
       // Clear existing errors
-      ApiService.post("laudo/procurar", values).then(({ data }) => {
-       router.push({ name: "laudo", params: { laudoId: data}});
-      }).catch(() => {
-        Swal.fire({
-          text: "Laudo não encontrado, verifique os dados informados",
-          icon: "error",
-          buttonsStyling: false,
-          confirmButtonText: "Tente de novo!",
-          customClass: {
-            confirmButton: "btn fw-bold btn-light-danger"
-          }
+      ApiService.post("laudo/procurar", values)
+        .then(({ data }) => {
+          router.push({ name: "laudo", params: { laudoId: data } });
+        })
+        .catch(() => {
+          Swal.fire({
+            text: "Laudo não encontrado, verifique os dados informados",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Tente de novo!",
+            customClass: {
+              confirmButton: "btn fw-bold btn-light-danger",
+            },
+          });
         });
-      });
     };
 
+    const setToc = () => {
+      toc.value = !toc.value;
+    }
     return {
       onSubmitLogin,
       login,
-      submitButton
+      submitButton,
+      toc,
+      setToc
     };
-  }
+  },
 });
 </script>
