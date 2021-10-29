@@ -485,6 +485,10 @@ export default defineComponent({
       }
     });
 
+    if (!window.localStorage.getItem(`search-${laudoId}`)) {
+      route.push({ name: "check-laudo" });
+    }
+
     const isImage = (fileUrl) => {
       const imgExtensions = ["jpg", "png", "jpeg", "bmp"];
       const videoExtensions = ["mkv", "mp4", "webm"];
@@ -560,7 +564,6 @@ export default defineComponent({
 
     ApiService.get(`laudo/${laudoId}`).then(({ data }) => {
       model.laudo = data;
-      console.log(data.items);
     });
 
 
