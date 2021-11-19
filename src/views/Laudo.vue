@@ -447,6 +447,8 @@
                         </div>
                       </div>
                     </div>
+                    
+                    <div class="text-center fw-bold text-dark"> PRYAL CERTIFICACAO AUTOMOTIVA LTDA <br /> 41.793.240/0001-78</div>
                   </div>
                 </div>
               </div>
@@ -484,6 +486,10 @@ export default defineComponent({
         documentos: []
       }
     });
+
+    if (!window.localStorage.getItem(`search-${laudoId}`)) {
+      route.push({ name: "check-laudo" });
+    }
 
     const isImage = (fileUrl) => {
       const imgExtensions = ["jpg", "png", "jpeg", "bmp"];
@@ -560,7 +566,6 @@ export default defineComponent({
 
     ApiService.get(`laudo/${laudoId}`).then(({ data }) => {
       model.laudo = data;
-      console.log(data.items);
     });
 
 

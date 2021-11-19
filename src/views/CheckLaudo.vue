@@ -199,6 +199,13 @@ export default defineComponent({
       // Clear existing errors
       ApiService.post("laudo/procurar", values)
         .then(({ data }) => {
+          const now = new Date();
+          now.setDate(now.getDate() + 1);
+          const item = {
+            value: true,
+            expiry: now.getTime()
+          };
+          window.localStorage.setItem(`search-${data}`, JSON.stringify(item))
           router.push({ name: "laudo", params: { laudoId: data } });
         })
         .catch(() => {
