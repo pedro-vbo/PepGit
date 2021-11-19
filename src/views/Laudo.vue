@@ -447,6 +447,7 @@
                         </div>
                       </div>
                     </div>
+                    <div class="text-center fw-bold text-dark"> PRYAL CERTIFICACAO AUTOMOTIVA LTDA <br /> 41.793.240/0001-78</div>
                   </div>
                 </div>
               </div>
