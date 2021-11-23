@@ -20,7 +20,7 @@
                         />
                         <div class="row">
                           <div
-                            class="col-6 d-flex flex-column align-items-center py-5"
+                            class="col-12 d-flex flex-column align-items-center py-5"
                           >
                             <h3>Parecer final</h3>
                             <span class="d-flex align-items-center text-center text-dark">
@@ -45,14 +45,14 @@
                               }}</span></span
                             >
                           </div>
-                          <div
+                          <!-- <div
                             class="col-6 d-flex justify-content-center align-items-center"
                           >
                             <img
                               src="media\misc\QRCode.png"
                               style="width: 100px"
                             />
-                          </div>
+                          </div> -->
 
                           <hr class="mt-5" />
                         </div>
@@ -423,7 +423,7 @@
                                 <div class="col-6 p-2" v-for="img in getImagensCategoria(
                                   categoria.categoria
                                 )" :key="img.imagem">
-                                  <img class="mw-100 me-1" role="button" :id="removeWhiteSpace(img.item)" :src="img.imagem" v-if="isImage(img.imagem)">
+                                  <img class="mw-100 me-1" role="button" :id="removeWhiteSpace(img.item)" :alt="img.item" :src="img.imagem" v-if="isImage(img.imagem)">
                                   <video class="mw-200px me-1" controls v-else>
                                     <source :src="img.imagem" />
                                   </video>
@@ -537,10 +537,24 @@ export default defineComponent({
       });
     };
 
+    const compare = ( a, b ) => {
+      if ( a["ordem"] < b["ordem"] ){
+        return -1;
+      }
+      if ( a["ordem"] > b["ordem"] ){
+        return 1;
+      }
+      return 0;
+    }
+
     const getImagensCategoria = categoria => {
       return model.laudo.evidencias.filter(x => {
         return x["categoria"] == categoria;
-      }).map(x => { return x });
+        })
+        .map(x => {
+          return x;
+        })
+        .sort(compare);
     };
 
     const getTextoCorreto = categoria => {

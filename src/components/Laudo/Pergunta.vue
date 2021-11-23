@@ -140,6 +140,7 @@ import { Field } from "vee-validate";
 import { defineComponent, ref } from "vue";
 import emitter from "tiny-emitter/instance";
 import ApiService from "@/core/services/ApiService";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "Pergunta",
@@ -187,9 +188,18 @@ export default defineComponent({
     };
 
     const removeEvidencia = (id, index) => {
-      evidencias.value.splice(index, 1);
-      ApiService.delete("/evidencia/excluir/" + id).then(({ data }) => {
-        console.log("data", data);
+      Swal.fire({
+        title: "Deseja realmente excluir essa evidência?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, deletar!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          evidencias.value.splice(index, 1);
+            ApiService.delete("/evidencia/excluir/" + id).then(({ data }) => {
+              console.log("data", data);
+            });
+          }
       });
     };
 
