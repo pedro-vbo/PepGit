@@ -70,15 +70,12 @@
                 <Pergunta
                   :pergunta="item"
                   :imagens="getEvidencias(item.itemId)"
+                  :analiseId="analiseId"
                   v-for="(item, index) in localizacao.items"
                   :key="index"
                 />
                 <button
                   @click="enviarRespostas(localizacao, indexPergunta, $event)"
-                  :disabled="
-                    localizacao.items.length >
-                      getNumeroRespostasPorLocalizacao(localizacao.localizacao)
-                  "
                   class="
                     btn btn-success
                     position-absolute
@@ -119,7 +116,7 @@ export default defineComponent({
 
     const isCadastroNovo = ref(true);
 
-    let analiseId = route.currentRoute.value.params.analiseId;
+    const analiseId = ref<any>(route.currentRoute.value.params.analiseId);
     let veiculoId = route.currentRoute.value.query.veiculoId;
     //var res = arr1.map(obj => arr2.find(o => o.id === obj.id) || obj);
 
@@ -139,7 +136,7 @@ export default defineComponent({
           "/analise/cadastrar?veiculoId=" + veiculoId,
           {}
         ).then(({ data }) => {
-          analiseId = data;
+          analiseId.value = data;
           veiculoId = null;
         });
       }
@@ -149,7 +146,7 @@ export default defineComponent({
       });
 
       const request = {
-        analiseId: analiseId,
+        analiseId: analiseId.value,
         respostas: respostas
       };
 
@@ -196,7 +193,7 @@ export default defineComponent({
         confirmButtonText: "Sim, deletar!",
       }).then((result) => {
         if (result.isConfirmed) {
-          ApiService.delete("/analise/excluir/" + analiseId).then(
+          ApiService.delete("/analise/excluir/" + analiseId.value).then(
             () => {
               Swal.fire("Deletado!", "Esse laudo foi excluído", "success");
             }
@@ -225,6 +222,20 @@ export default defineComponent({
         }
       });
 
+      emitter.on("enviarImagem", async function(imagem, itemId, categoria) {
+        await ApiService.post(
+          "/evidencia/cadastrar",
+          {
+            analiseId: analiseId.value,
+            itemId: itemId,
+            categoria: categoria,
+            imagem: imagem
+          }
+        ).then(({ data }) => {
+          console.log('data imagem', data);
+        });
+      });
+
       //let analiseNova = {...obj1, ...obj2};
       const veiculoId = route.currentRoute.value.query.veiculoId;
       if (veiculoId) {
@@ -236,7 +247,7 @@ export default defineComponent({
         isCadastroNovo.value = false;
         ApiService.get("analise/perguntas").then(({ data }) => {
           const perguntasSemRespostas = data;
-          ApiService.get(`analise?id=${analiseId}`).then(({ data }) => {
+          ApiService.get(`analise?id=${analiseId.value}`).then(({ data }) => {
             analise.value = data;
 
             const perguntasComRespostas = perguntasSemRespostas.map(
@@ -281,7 +292,8 @@ export default defineComponent({
       enviarRespostas,
       excluir,
       getEvidencias,
-      isCadastroNovo
+      isCadastroNovo,
+      analiseId
     };
   }
 });

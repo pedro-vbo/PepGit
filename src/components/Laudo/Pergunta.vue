@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column mb-10 bg-light rounded p-5">
     <span class="fw-bold fs-1">{{ resposta.item }}</span>
-    <span class="mb-3"> Categoria: {{ resposta.categoria }} </span>
+    <!-- <span class="mb-3"> Categoria: {{ resposta.categoria }} </span> -->
     <div class="d-flex align-items-center justify-content-start">
       <label
         class="form-check form-check-lg form-check-custom form-check-solid pe-5"
@@ -60,15 +60,49 @@
     <div class="">
       <!-- <h4>Fotos já adicionadas</h4> -->
       <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
-        <div v-for="(evidencia, index) in evidencias" :key="index" class="overlay">
-          <div class="overlay-wrapper">
-              <img :src="evidencia.url" class="img-thumbnail mw-100px me-1" v-if="isImage(evidencia.url)" />
+        <div v-for="(evidencia, index) in evidencias" :key="index">
+          <div class="overlay">
+            <div class="overlay-wrapper">
+              <img
+                :src="evidencia.url"
+                class="img-thumbnail mw-100px me-1"
+                v-if="isImage(evidencia.url)"
+              />
               <video class="mw-200px me-1" controls v-else>
                 <source :src="evidencia.url" />
               </video>
+            </div>
+            <div class="overlay-layer bg-dark bg-opacity-10">
+              <button
+                @click="removeEvidencia(evidencia.id, index)"
+                class="btn btn-sm btn-danger"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
-          <div class="overlay-layer bg-dark bg-opacity-10">
-            <button @click="removeEvidencia(evidencia.id, index)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+          <div class="w-100" v-if="isImage(evidencia.url)">
+            <button
+              :ref="
+                (el) => {
+                  submitButton[index] = el;
+                }
+              "
+              id="kt_sign_in_submit"
+              class="btn btn-sm btn-dark"
+              @click="girar(evidencia, index)"
+            >
+              <span class="indicator-label">
+                Girar
+              </span>
+
+              <span class="indicator-progress">
+                Girando...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -101,13 +135,19 @@
         <div class="d-flex flex-nowrap overflow-auto align-items-start mb-3">
           <div v-for="(item, j) in previewList" :key="j" class="overlay">
             <div class="overlay-wrapper">
-              <img :src="item" class="img-thumbnail mw-100px me-1" v-if="item.indexOf('data:image') >= 0" />
+              <img
+                :src="item"
+                class="img-thumbnail mw-100px me-1"
+                v-if="item.indexOf('jpg') >= 0 || item.indexOf('jpeg') >= 0 || item.indexOf('png') >= 0"
+              />
               <video class="mw-200px me-1" controls v-else>
                 <source :src="item" />
               </video>
             </div>
             <div class="overlay-layer bg-dark bg-opacity-10">
-              <button @click="removeImagem(j)"  class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+              <button @click="removeImagem(j)" class="btn btn-sm btn-danger">
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -121,6 +161,7 @@ import { Field } from "vee-validate";
 import { defineComponent, ref } from "vue";
 import emitter from "tiny-emitter/instance";
 import ApiService from "@/core/services/ApiService";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "Pergunta",
@@ -128,16 +169,24 @@ export default defineComponent({
   props: {
     pergunta: Object,
     imagens: Array,
+    analiseId: String
   },
   setup(context) {
     const resposta = ref<any>(context.pergunta);
     const evidencias = ref<any>(context.imagens);
+    const analiseId = ref<any>(context.analiseId);
     resposta.value.imagens = [];
     const input = ref<HTMLInputElement>();
     const previewList = ref<any>([]);
+    const submitButton = ref<any>([]);
 
     const atualizarResposta = () => {
+      console.log("resposta", resposta.value);
       emitter.emit("atualizarResposta", resposta.value);
+    };
+
+    const enviarImagem = (imagem, itemId, categoria) => {
+      emitter.emit("enviarImagem", imagem, itemId, categoria);
     };
 
     const isImage = (fileUrl) => {
@@ -145,27 +194,73 @@ export default defineComponent({
       const videoExtensions = ["mkv", "mp4", "webm"];
       const lastDot = fileUrl.lastIndexOf(".");
 
-      const ext = fileUrl.substring(lastDot + 1);
+      let ext = fileUrl.substring(lastDot + 1);
+      const refresh = ext.lastIndexOf("?");
+      if (refresh > -1) {
+        ext = ext.substring(0, refresh);
+      }
 
       if (imgExtensions.includes(ext)) {
         return true;
       } else {
         return false;
       }
-    }
+    };
 
     const removeImagem = (index) => {
       previewList.value.splice(index, 1);
       resposta.value.imagens.splice(index, 1);
       atualizarResposta();
-    }
+    };
 
     const removeEvidencia = (id, index) => {
-      evidencias.value.splice(index, 1);
-      ApiService.delete("/evidencia/excluir/" + id).then(({ data }) => {
-        console.log('data', data)
+      Swal.fire({
+        title: "Deseja realmente excluir essa evidência?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, deletar!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          evidencias.value.splice(index, 1);
+            ApiService.delete("/evidencia/excluir/" + id).then(({ data }) => {
+              console.log("data", data);
+            });
+          }
+      });
+    };
+
+    const girar = (evidencia, index) => {
+      if (submitButton.value[index]) {
+        // Activate indicator
+        submitButton.value[index].setAttribute("data-kt-indicator", "on");
+      }
+      ApiService.get(`evidencia/girar?id=${evidencia.id}`).then(({ data }) => {
+        evidencia.url = data;
+        submitButton.value[index].removeAttribute("data-kt-indicator");
       });
     }
+
+    const compress = (img, size) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const initSize = img.src.length;
+      const width = img.width;
+      const height = img.height;
+      canvas.width = width;
+      canvas.height = height;
+      //Base color
+      if (ctx !== null) {
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, width, height);
+      }
+      //Minimum compression
+      const ndata = canvas.toDataURL("image/jpeg", size);
+      console.log("* * * * * * * * * *");
+      // console.log(ndata)
+      console.log(ndata.length / 1024);
+      return ndata;
+    };
 
     const onFileAdd = (event) => {
       const input = event.target;
@@ -173,26 +268,71 @@ export default defineComponent({
       let index = 0;
       if (input.files) {
         while (count--) {
-          const reader = new FileReader();
-          reader.onload = (e: any) => {
-            const result = e.target.result;
-            previewList.value.push(result);
-            if (result.indexOf("data:image") >= 0) {
-              resposta.value.imagens.push(
-                e.target.result.replace(/^data:image\/[a-z]+;base64,/, "")
-              );
-            } else {
-              resposta.value.imagens.push(
-                e.target.result.replace(/^data:video\/[a-z,0-9]+;base64,/, "")
-              );
-            }
-            atualizarResposta();
-          };
-          reader.readAsDataURL(input.files[index]);
+          const formData = new FormData();
+
+          formData.append("evidencia", input.files[index]);
+          formData.append("analiseId", analiseId.value);
+          formData.append("itemId", resposta.value.itemId);
+          formData.append("categoria", resposta.value.categoria);
+
+          ApiService.post("/evidencia/cadastrar2", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }).then(({ data }) => {
+            evidencias.value.push({
+              url: data.item2,
+              id: data.item1
+            });
+          });
           index++;
         }
       }
     };
+
+    // const onFileAdd2 = (event) => {
+    //   const input = event.target;
+    //   let count = input.files.length;
+    //   let index = 0;
+    //   if (input.files) {
+    //     while (count--) {
+    //       const reader = new FileReader();
+    //       reader.onload = (e: any) => {
+    //         const result = e.target.result;
+    //         previewList.value.push(result);
+    //         if (result.indexOf("data:image") >= 0) {
+    //           const img = new Image();
+    //           img.src = e.target.result;
+    //           img.onload = function () {
+    //             const data = compress(img, 0.5);
+    //             const imagem = data.replace(/^data:image\/[a-z]+;base64,/, "");
+    //             resposta.value.imagens.push(imagem);
+    //             enviarImagem(
+    //               imagem,
+    //               resposta.value.itemId,
+    //               resposta.value.categoria
+    //             );
+    //             atualizarResposta();
+    //           };
+    //         } else {
+    //           const imagem = e.target.result.replace(
+    //             /^data:video\/[a-z,0-9]+;base64,/,
+    //             ""
+    //           );
+    //           resposta.value.imagens.push(imagem);
+    //           enviarImagem(
+    //             imagem,
+    //             resposta.value.itemId,
+    //             resposta.value.categoria
+    //           );
+    //           atualizarResposta();
+    //         }
+    //       };
+    //       reader.readAsDataURL(input.files[index]);
+    //       index++;
+    //     }
+    //   }
+    // };
 
     return {
       Field,
@@ -204,7 +344,9 @@ export default defineComponent({
       atualizarResposta,
       removeImagem,
       removeEvidencia,
-      isImage
+      isImage,
+      girar,
+      submitButton
     };
   },
 });

@@ -20,10 +20,10 @@
                         />
                         <div class="row">
                           <div
-                            class="col-6 d-flex flex-column align-items-center py-5"
+                            class="col-12 d-flex flex-column align-items-center py-5"
                           >
                             <h3>Parecer final</h3>
-                            <span class="d-flex align-items-center text-info">
+                            <span class="d-flex align-items-center text-center text-dark">
                               <!-- <i
                                 class="fa fa-check-circle text-success me-3"
                                 style="font-size: 50px"
@@ -31,6 +31,12 @@
                               Aprovado -->
                               {{ model.laudo.parecerFinal }}
                             </span>
+                            <div class="d-flex align-items-center mt-3" v-if="model.laudo.documentos.length > 0">
+                                <div v-for="(doc, index) in model.laudo.documentos" :key="index">
+                                  <a :href="doc.url" target="_blank" class="btn btn-sm btn-secondary "
+                                    ><i class="fas fa-file-download fs-4 me-2"></i> <span class="fs-9">{{doc.nome}}</span></a>
+                                </div>
+                            </div>
                             <span class="mt-5"
                               ><span class="fs-8 text-muted"
                                 >Data do laudo </span
@@ -39,14 +45,14 @@
                               }}</span></span
                             >
                           </div>
-                          <div
+                          <!-- <div
                             class="col-6 d-flex justify-content-center align-items-center"
                           >
                             <img
                               src="media\misc\QRCode.png"
                               style="width: 100px"
                             />
-                          </div>
+                          </div> -->
 
                           <hr class="mt-5" />
                         </div>
@@ -284,7 +290,7 @@
                                     .categorias"
                                   :key="index"
                                 >
-                                  <label>{{ categoria.categoria }}</label>
+                                  <label>{{ getTextoCorreto(categoria.categoria) }}</label>
                                   <label
                                     ><span v-if="getItemsOk(categoria.items) !== categoria.items.length" class="badge badge-circle badge-white me-1"><i class="fa fa-exclamation-triangle  text-warning"></i></span>{{ getItemsOk(categoria.items) }}/{{
                                       categoria.items.length
@@ -310,7 +316,7 @@
                                     .categorias"
                                   :key="index"
                                 >
-                                  <label>{{ categoria.categoria }}</label>
+                                  <label>{{ getTextoCorreto(categoria.categoria) }}</label>
                                   <label
                                     >{{ getItemsOk(categoria.items) }}/{{
                                       categoria.items.length
@@ -346,7 +352,7 @@
                             >
                               <div class="card-title text-center">
                                 <h3 class="text-warning pt-3">
-                                  {{ categoria.categoria }}
+                                  {{ getTextoCorreto(categoria.categoria) }}
                                 </h3>
                               </div>
                               <div class="px-3 d-flex flex-column">
@@ -375,7 +381,7 @@
                       <div class="col-lg-8">
                         <div class="card border mb-3">
                           <div className="card-body d-flex flex-column">
-                            <h3>{{ categoria.categoria }}</h3>
+                            <h3>{{ getTextoCorreto(categoria.categoria) }}</h3>
                             <div
                               class="row"
                               :class="{'bg-light': indexItem % 2 != 0}"
@@ -417,7 +423,7 @@
                                 <div class="col-6 p-2" v-for="img in getImagensCategoria(
                                   categoria.categoria
                                 )" :key="img.imagem">
-                                  <img class="mw-100 me-1" role="button" :id="removeWhiteSpace(img.item)" :src="img.imagem" v-if="isImage(img.imagem)">
+                                  <img class="mw-100 me-1" role="button" :id="removeWhiteSpace(img.item)" :alt="img.item" :src="img.imagem" v-if="isImage(img.imagem)">
                                   <video class="mw-200px me-1" controls v-else>
                                     <source :src="img.imagem" />
                                   </video>
@@ -441,6 +447,8 @@
                         </div>
                       </div>
                     </div>
+
+                    <div class="text-center fw-bold text-dark"> PRYAL CERTIFICACAO AUTOMOTIVA LTDA <br /> 41.793.240/0001-78</div>
                   </div>
                 </div>
               </div>
@@ -474,9 +482,14 @@ export default defineComponent({
         chassi: null,
         placa: null,
         items: [],
-        evidencias: []
+        evidencias: [],
+        documentos: []
       }
     });
+
+    if (!window.localStorage.getItem(`search-${laudoId}`) && !window.localStorage.getItem("USER")) {
+      route.push({ name: "check-laudo" });
+    }
 
     const isImage = (fileUrl) => {
       const imgExtensions = ["jpg", "png", "jpeg", "bmp"];
@@ -524,16 +537,52 @@ export default defineComponent({
       });
     };
 
+    const compare = ( a, b ) => {
+      if ( a["ordem"] < b["ordem"] ){
+        return -1;
+      }
+      if ( a["ordem"] > b["ordem"] ){
+        return 1;
+      }
+      return 0;
+    }
+
     const getImagensCategoria = categoria => {
       return model.laudo.evidencias.filter(x => {
         return x["categoria"] == categoria;
-      }).map(x => { return x });
+        })
+        .map(x => {
+          return x;
+        })
+        .sort(compare);
     };
+
+    const getTextoCorreto = categoria => {
+      let palavra = categoria;
+      switch (categoria) {
+        case "ConservacaoInterna":
+          palavra = "Conservação Interna";
+          break;
+        case "ConservacaoExterna":
+          palavra = "Conservação Externa";
+          break;
+        case "Identificacao":
+          palavra = "Identificação";
+          break;
+        case "Perifericos":
+          palavra = "Periféricos";
+          break;
+        default:
+          break;
+      }
+      return palavra;
+    }
 
     ApiService.get(`laudo/${laudoId}`).then(({ data }) => {
       model.laudo = data;
-      console.log(data.items);
     });
+
+
     return {
       model,
       isImage,
@@ -542,7 +591,8 @@ export default defineComponent({
       getItemsComProblema,
       getImagensCategoria,
       goToMensagemProblema,
-      removeWhiteSpace
+      removeWhiteSpace,
+      getTextoCorreto
     };
   }
 });
