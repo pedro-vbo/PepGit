@@ -60,27 +60,48 @@
     <div class="">
       <!-- <h4>Fotos já adicionadas</h4> -->
       <div class="d-flex flex-nowrap overflow-auto align-items-start my-3">
-        <div
-          v-for="(evidencia, index) in evidencias"
-          :key="index"
-          class="overlay"
-        >
-          <div class="overlay-wrapper">
-            <img
-              :src="evidencia.url"
-              class="img-thumbnail mw-100px me-1"
-              v-if="isImage(evidencia.url)"
-            />
-            <video class="mw-200px me-1" controls v-else>
-              <source :src="evidencia.url" />
-            </video>
+        <div v-for="(evidencia, index) in evidencias" :key="index">
+          <div class="overlay">
+            <div class="overlay-wrapper">
+              <img
+                :src="evidencia.url"
+                class="img-thumbnail mw-100px me-1"
+                v-if="isImage(evidencia.url)"
+              />
+              <video class="mw-200px me-1" controls v-else>
+                <source :src="evidencia.url" />
+              </video>
+            </div>
+            <div class="overlay-layer bg-dark bg-opacity-10">
+              <button
+                @click="removeEvidencia(evidencia.id, index)"
+                class="btn btn-sm btn-danger"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
-          <div class="overlay-layer bg-dark bg-opacity-10">
+          <div class="w-100" v-if="isImage(evidencia.url)">
             <button
-              @click="removeEvidencia(evidencia.id, index)"
-              class="btn btn-sm btn-danger"
+              :ref="
+                (el) => {
+                  submitButton[index] = el;
+                }
+              "
+              id="kt_sign_in_submit"
+              class="btn btn-sm btn-dark"
+              @click="girar(evidencia, index)"
             >
-              <i class="fas fa-trash"></i>
+              <span class="indicator-label">
+                Girar
+              </span>
+
+              <span class="indicator-progress">
+                Girando...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
             </button>
           </div>
         </div>
@@ -157,6 +178,7 @@ export default defineComponent({
     resposta.value.imagens = [];
     const input = ref<HTMLInputElement>();
     const previewList = ref<any>([]);
+    const submitButton = ref<any>([]);
 
     const atualizarResposta = () => {
       console.log("resposta", resposta.value);
@@ -172,7 +194,11 @@ export default defineComponent({
       const videoExtensions = ["mkv", "mp4", "webm"];
       const lastDot = fileUrl.lastIndexOf(".");
 
-      const ext = fileUrl.substring(lastDot + 1);
+      let ext = fileUrl.substring(lastDot + 1);
+      const refresh = ext.lastIndexOf("?");
+      if (refresh > -1) {
+        ext = ext.substring(0, refresh);
+      }
 
       if (imgExtensions.includes(ext)) {
         return true;
@@ -202,6 +228,17 @@ export default defineComponent({
           }
       });
     };
+
+    const girar = (evidencia, index) => {
+      if (submitButton.value[index]) {
+        // Activate indicator
+        submitButton.value[index].setAttribute("data-kt-indicator", "on");
+      }
+      ApiService.get(`evidencia/girar?id=${evidencia.id}`).then(({ data }) => {
+        evidencia.url = data;
+        submitButton.value[index].removeAttribute("data-kt-indicator");
+      });
+    }
 
     const compress = (img, size) => {
       const canvas = document.createElement("canvas");
@@ -308,6 +345,8 @@ export default defineComponent({
       removeImagem,
       removeEvidencia,
       isImage,
+      girar,
+      submitButton
     };
   },
 });
